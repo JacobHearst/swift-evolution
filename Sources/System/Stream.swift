@@ -16,8 +16,9 @@ extension Stream {
     case appendUpdate = "a+"
   }
 
+  // TODO: Consider putting on Path
   public init(open path: Path, _ mode: Stream.AccessMode) throws {
-    guard let obj = fopen(path.rawValue, mode.rawValue) else { throw errno }
+    guard let obj = fopen(path.bytes, mode.rawValue) else { throw errno }
     self.rawValue = obj
   }
 
