@@ -135,16 +135,10 @@ extension FileDescriptor.Control {
   //                    Fildes.  The argument must be a buffer of size
   //                    MAXPATHLEN or greater.
   public func getPath(noFirmLink: Bool = false) throws -> Path {
-    // TODO: Consider some kind of `withMaxPathLength` API or something on Path...
-    var path = Path(Array(repeating: 0, count: Path.maxLength))
-    try path.bytes.withUnsafeMutableBytes {
-      _ = try _control(noFirmLink ? F_GETPATH_NOFIRMLINK : F_GETPATH, $0.baseAddress!)
+    return try Path {
+      _ = try _control(noFirmLink ? F_GETPATH_NOFIRMLINK : F_GETPATH, $0)
+      return 1 + strlen($0.assumingMemoryBound(to: Int8.self))
     }
-    guard let len = path.bytes.firstIndex(of: 0) else {
-      fatalError("Uh oh, not sure what to say here. Did we have space for nul terminator?")
-    }
-    path.bytes.removeLast(path.bytes.count - len - 1)
-    return path
   }
 
   public struct PreallocateFlags: OptionSet {

@@ -37,6 +37,15 @@ public struct Path {
     var str = str
     self = str.withUTF8 { Path($0._asCChar) }
   }
+
+  public init(
+    unsafeUninitializedMaxLengthCapacity f: (UnsafeMutableRawPointer) throws -> Int
+  ) rethrows {
+    self.bytes = try Array(unsafeUninitializedCapacity: Path.maxLength) {
+      (bufPtr: inout UnsafeMutableBufferPointer<Int8>, count: inout Int) in
+      count = try f(UnsafeMutableRawPointer(bufPtr.baseAddress!))
+    }
+  }
 }
 extension Path: ExpressibleByStringLiteral {
   public init(stringLiteral: String) {
