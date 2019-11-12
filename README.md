@@ -5,7 +5,8 @@ A description of this package.
 ### TODO
 
 * `posix_spawn`
-* The rest of `fcntl`
+* Path components
+* `fcntl` file locking, `flock`, etc.
 * `strerror`
 * `dir` `dirent`
 * `pthread` stuff... but maybe deferred 
@@ -13,4 +14,8 @@ A description of this package.
 * `stat`
 * `chmod`, `chown`
 * `symlink`, `link`, `unlink`
+
+* `acl_tag_t`, flags and permissions
+
+## Path
 

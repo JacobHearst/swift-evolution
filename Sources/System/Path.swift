@@ -23,7 +23,6 @@ extension UnsafeBufferPointer where Element == CChar {
 
 // TODO: Should we have an UnsafePath that doesn't own?
 public struct Path {
-  // TODO: We probably don't actually want `String`, due to differences in normalization
   public var bytes: [CChar]
 
   public init() {
@@ -32,13 +31,16 @@ public struct Path {
   public init<C: Collection>(_ bytes: C) where C.Element == CChar {
     self.bytes = Array(bytes)
   }
+  public init(_ cPtr: UnsafePointer<CChar>) {
+    self.init(UnsafeBufferPointer(start: cPtr, count: strlen(cPtr)))
+  }
 
   public init(_ str: String) {
     var str = str
     self = str.withUTF8 { Path($0._asCChar) }
   }
 
-  public init(
+  internal init(
     unsafeUninitializedMaxLengthCapacity f: (UnsafeMutableRawPointer) throws -> Int
   ) rethrows {
     self.bytes = try Array(unsafeUninitializedCapacity: Path.maxLength) {

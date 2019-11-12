@@ -14,6 +14,7 @@ extension FileDescriptor {
 }
 
 extension FileDescriptor {
+  // TODO: The below 2 types are unified in C, should we do the same?
   public enum AccessMode: CInt {
     // O_RDONLY        open for reading only
     case readOnly = 0x0
@@ -122,6 +123,9 @@ extension FileDescriptor {
     // Execute permissions for other
     public static var otherExecute: Permissions { Permissions(0o1) }
 
+    // Read-write mask for other
+    public static var otherReadWrite: Permissions { Permissions(0o6) }
+
     // Read-write-execute mask for other
     public static var otherReadWriteExecute: Permissions { Permissions(0o7) }
 
@@ -130,6 +134,9 @@ extension FileDescriptor {
 
     // Write permissions for group
     public static var groupWrite: Permissions { Permissions(0o20) }
+
+    // Read-write mask for group
+    public static var groupReadWrite: Permissions { Permissions(0o60) }
 
     // Execute permissions for group
     public static var groupExecute: Permissions { Permissions(0o10) }
@@ -146,6 +153,9 @@ extension FileDescriptor {
     // Execute permissions for owner
     public static var ownerExecute: Permissions { Permissions(0o100) }
 
+    // Read-write mask for owner
+    public static var ownerReadWrite: Permissions { Permissions(0o600) }
+
     // Read-write-execute mask for owner
     public static var ownerReadWriteExecute: Permissions { Permissions(0o700) }
 
@@ -158,10 +168,12 @@ extension FileDescriptor {
     // save swapped text even after use
     public static var saveText: Permissions { Permissions(0o1000) }
   }
+  // TODO: Consider making Permisions ExpressibleByIntegerLiteral for octal literals...
 
-  public enum SeekWhence: CInt {
+  // TODO: Consider breaking out seek into multiple APIs instead
+  public enum SeekOrigin: CInt {
     // SEEK_SET: the offset is set to offset bytes.
-    case set = 0
+    case start = 0
 
     // SEEK_CUR: the offset is set to its current location plus offset bytes.
     case current = 1
@@ -172,11 +184,11 @@ extension FileDescriptor {
     // SEEK_HOLE: the offset is set to the start of the next hole greater than
     // or equal to the supplied offset.  The definition of a hole is provided
     // below.
-    case hole = 3
+    case nextHole = 3
 
     // SEEK_DATA: the offset is set to the start of the next non-hole file
     // region greater than or equal to the supplied offset.
-    case data = 4
+    case nextData = 4
   }
 }
 
@@ -200,12 +212,11 @@ extension FileDescriptor {
   }
 
   public func close() throws {
-    // TODO: Flush and close are mixed up, maybe intercept and suppress some errors like EINTR?
     guard Darwin.close(self.rawValue) != -1 else { throw errno }
   }
 
   public func seek(
-    offset: Int64, whence: FileDescriptor.SeekWhence
+    offset: Int64, from whence: FileDescriptor.SeekOrigin
   ) throws -> Int64 {
     let newOffset = Darwin.lseek(self.rawValue, COffsetT(offset), whence.rawValue)
     guard newOffset != -1 else { throw errno }
