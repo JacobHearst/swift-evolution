@@ -194,12 +194,12 @@ extension FileDescriptor {
 
 extension FileDescriptor {
   // TODO: Consider putting on Path
-  public init(
-    open path: Path,
+  public static func open(
+    _ path: Path,
     _ mode: FileDescriptor.AccessMode,
     options: FileDescriptor.OpenOptions = FileDescriptor.OpenOptions(),
     permissions: FileDescriptor.Permissions? = nil
-  ) throws {
+  ) throws -> FileDescriptor {
     let oFlag = mode.rawValue | options.rawValue
     let desc: CInt
     if let permissions = permissions {
@@ -208,7 +208,7 @@ extension FileDescriptor {
       precondition(!options.contains(.create), "Create must be given permissions")
       desc = Darwin.open(path.bytes, oFlag)
     }
-    try self.init(_checking: desc)
+    return try FileDescriptor(_checking: desc)
   }
 
   public func close() throws {
@@ -221,6 +221,40 @@ extension FileDescriptor {
     let newOffset = Darwin.lseek(self.rawValue, COffsetT(offset), whence.rawValue)
     guard newOffset != -1 else { throw errno }
     return Int64(newOffset)
+  }
+
+  // Uses cursor position
+  public func read(into: UnsafeMutableRawBufferPointer) throws -> Int {
+    let numBytes = Darwin.read(self.rawValue, into.baseAddress, into.count)
+    guard numBytes >= 0 else { throw errno }
+    return numBytes
+  }
+
+  public func read(
+    fromAbsoluteOffset offset: Int64, into: UnsafeMutableRawBufferPointer
+  ) throws -> Int {
+    let numBytes = Darwin.pread(self.rawValue, into.baseAddress, into.count, offset)
+    guard numBytes >= 0 else { throw errno }
+    return numBytes
+  }
+
+  // Uses cursor position
+  //
+  // TODO: Return a ByteBuffer
+  public func read(numBytes: Int) throws -> [UInt8] {
+    return try Array<UInt8>(unsafeUninitializedCapacity: numBytes) { buf, count in
+      count = try read(into: UnsafeMutableRawBufferPointer(buf))
+    }
+  }
+
+  //
+  // TODO: Return a ByteBuffer
+  public func read(
+    fromAbsoluteOffset offset: Int64, numBytes: Int
+  ) throws -> [UInt8] {
+    return try Array<UInt8>(unsafeUninitializedCapacity: numBytes) { buf, count in
+      count = try read(fromAbsoluteOffset: offset, into: UnsafeMutableRawBufferPointer(buf))
+    }
   }
 }
 
