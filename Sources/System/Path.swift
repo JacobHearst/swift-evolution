@@ -23,16 +23,23 @@ extension UnsafeBufferPointer where Element == CChar {
 
 // TODO: Should we have an UnsafePath that doesn't own?
 public struct Path {
+  // Includes nul-terminator
   public var bytes: [CChar]
 
+  public var length: Int { bytes.count - 1 }
+
+  public var bytesDroppingNulTerminator: ArraySlice<CChar> { bytes.dropLast() }
+
   public init() {
-    self.bytes = []
+    self.bytes = [0]
   }
-  public init<C: Collection>(_ bytes: C) where C.Element == CChar {
+  internal init<C: Collection>(_ bytes: C) where C.Element == CChar {
     self.bytes = Array(bytes)
+    self.bytes.append(0)
   }
-  public init(_ cPtr: UnsafePointer<CChar>) {
-    self.init(UnsafeBufferPointer(start: cPtr, count: strlen(cPtr)))
+
+  public init(nulTerminatedCPtr cPtr: UnsafePointer<CChar>) {
+    self.init(UnsafeBufferPointer(start: cPtr, count: 1+strlen(cPtr)))
   }
 
   public init(_ str: String) {
@@ -45,8 +52,11 @@ public struct Path {
   ) rethrows {
     self.bytes = try Array(unsafeUninitializedCapacity: Path.maxLength) {
       (bufPtr: inout UnsafeMutableBufferPointer<Int8>, count: inout Int) in
-      count = try f(UnsafeMutableRawPointer(bufPtr.baseAddress!))
+      let len = try f(UnsafeMutableRawPointer(bufPtr.baseAddress!))
+      bufPtr[len] = 0
+      count = Swift.min(Path.maxLength, len + 1)
     }
+    // TODO: We could consider shrinking now to save space.
   }
 }
 extension Path: ExpressibleByStringLiteral {
@@ -54,18 +64,12 @@ extension Path: ExpressibleByStringLiteral {
     self.init(stringLiteral)
   }
   public var asString: String {
-    bytes.withUnsafeBytes { String(decoding: $0, as: UTF8.self) }
+    bytesDroppingNulTerminator.withUnsafeBytes { String(decoding: $0, as: UTF8.self) }
   }
 }
 
 import Darwin
 extension Path {
   public static var maxLength: Int { Int(MAXPATHLEN) }
-
-//  public mutating func reserveMaxLangth() {
-//    self.bytes.reserveCapacity(Path.maxLength)
-//  }
-//
-//  public var hasMaxLengthCapacity: Bool { bytes.capacity >= Path.maxLength }
 }
 
