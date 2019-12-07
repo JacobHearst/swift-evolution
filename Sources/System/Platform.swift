@@ -1,11 +1,23 @@
 
-public typealias CInt = Int32
-public typealias CModeT = UInt16
-public typealias COffsetT = Int64
+
+import Darwin
+
 public typealias CChar = Int8
+public typealias CInt = Int32
 public typealias CUInt32T = UInt32
-public typealias CACLT = OpaquePointer
-public typealias CACLEntryT = OpaquePointer
+
+public typealias CModeT = mode_t
+public typealias COffsetT = off_t
+public typealias CACLT = acl_t
+public typealias CACLEntryT = acl_entry_t
+public typealias CDevT = dev_t
+public typealias CNLinkT = nlink_t
+public typealias CStat = stat
+public typealias CInoT = ino_t
+public typealias CUIDT = uid_t
+public typealias CGIDT = gid_t
+public typealias CTimespec = timespec
+public typealias CTimeT = time_t
 
 internal var eof: CInt { -1 }
 
