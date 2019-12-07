@@ -18,55 +18,36 @@ tryCopyFile()
 
 // Do a `tree`-like printout
 
-let aPath = Path("/tmp/a")
+let treeExample = Path("/tmp/treeExample")
 
 import Foundation
 
-enum EntryKind {
-  case directory
-  case file
-  case socket
-  case symlink
-
-  case unknown
-}
-extension EntryKind {
-  init(from: FileAttributeType) {
-    switch from {
-    case .typeDirectory: self = .directory
-    case .typeRegular: self = .file
-    case .typeSocket: self = .socket
-    case .typeSymbolicLink: self = .symlink
-
-    default: self = .unknown
+// Mimic tree -FU using FileManager
+extension WithFoundation {
+  static func treeFU(_ path: Path) throws {
+    let entries = WithFoundation.RecursiveEntries(path)
+    for entry in entries {
+      print(entry.formatted())
     }
   }
 }
+try! WithFoundation.treeFU(treeExample)
 
-guard let enumerator = FileManager.default.enumerator(atPath: aPath.asString) else {
-  fatalError("No FileManager enumerator provided for \(aPath.asString)")
-}
-print(enumerator.fileAttributes?[.type] ?? "none")
-
-print()
-for entry in enumerator {
-  guard let name = entry as? String,
-        let fileAttrType = enumerator.fileAttributes?[.type] as? FileAttributeType
-  else {
-    fatalError("wha?")
-  }
-
-  let kind = EntryKind(from: fileAttrType)
-  print("\(name), level \(enumerator.level), kind: \(kind)")
-
-  guard let posixPermissions = enumerator.fileAttributes?[.posixPermissions] as? NSNumber else {
-    fatalError("wha?")
-  }
-  let isExec = false
-  print(String(posixPermissions.int16Value, radix: 8))
-}
 
 print("Done")
 
+
+import System
+
+extension WithSystem {
+  static func treeFU(_ path: Path) throws {
+    fatalError()
+  }
+}
+try! WithSystem.treeFU(treeExample)
+
 // tree:
 //   -F  Append  a `/' for directories, a `=' for socket files, a `*' for executable files, and a `|' for FIFO's
+
+
+
