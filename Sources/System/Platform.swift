@@ -18,6 +18,7 @@ public typealias CUIDT = uid_t
 public typealias CGIDT = gid_t
 public typealias CTimespec = timespec
 public typealias CTimeT = time_t
+public typealias CUInt = u_int
 
 internal var eof: CInt { -1 }
 

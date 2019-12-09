@@ -4,20 +4,6 @@ public struct FileStat: RawRepresentable {
   public init(rawValue: CStat) { self.rawValue = rawValue }
 }
 
-// TODO: Separate file
-public struct Time: RawRepresentable {
-  public var rawValue: CTimeT
-  public init(rawValue: CTimeT) { self.rawValue = rawValue }
-}
-public struct Timespec: RawRepresentable {
-  public var rawValue: CTimespec
-  public init(rawValue: CTimespec) { self.rawValue = rawValue }
-
-  // TODO: Bleh, this is messy as C has them both type aliased to `long`...
-  public var seconds: Time { Time(rawValue: self.rawValue.tv_sec) }
-
-  public var nanoseconds: Int { self.rawValue.tv_nsec }
-}
 
 extension FileStat {
   public struct DeviceID: RawRepresentable {
@@ -30,7 +16,7 @@ extension FileStat {
 
   // dev_t st_rdev; /* Device ID */
   //
-  // TODO: better name
+  // TODO: better name: "realDevice", "deviceIfActuallyDevice?" ?
   public var deviceFileDevice: DeviceID { DeviceID(rawValue: self.rawValue.st_rdev) }
 }
 

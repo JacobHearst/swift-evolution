@@ -13,19 +13,19 @@ extension FileDescriptor {
 
 extension FileDescriptor.Control {
   private func _control(_ command: CInt) throws -> CInt {
-    let value = fcntl(self.rawValue, command)
+    let value = Darwin.fcntl(self.rawValue, command)
     guard value != -1 else { throw errno }
     return value
   }
   private func _control(_ command: CInt, _ arg: CInt) throws -> CInt {
-    let value = fcntl(self.rawValue, command, arg)
+    let value = Darwin.fcntl(self.rawValue, command, arg)
     guard value != -1 else { throw errno }
     return value
   }
   private func _control(
     _ command: CInt, _ ptr: UnsafeMutableRawPointer
   ) throws -> CInt {
-    let value = fcntl(self.rawValue, command, ptr)
+    let value = Darwin.fcntl(self.rawValue, command, ptr)
     guard value != -1 else { throw errno }
     return value
   }
@@ -49,7 +49,8 @@ extension FileDescriptor.Control {
   // F_DUPFD_CLOEXEC    Like F_DUPFD, except that the close-on-exec flag asso-
   //                    ciated with the new file descriptor is set.
   public func duplicate(setCloseOnExec: Bool = false) throws -> FileDescriptor {
-    return FileDescriptor(rawValue: try _control(setCloseOnExec ? F_DUPFD_CLOEXEC : F_DUPFD))
+    return FileDescriptor(
+      rawValue: try _control(setCloseOnExec ? Darwin.F_DUPFD_CLOEXEC : Darwin.F_DUPFD))
   }
 
   public struct Flags: OptionSet {
@@ -63,12 +64,12 @@ extension FileDescriptor.Control {
   // F_GETFD            Get the flags associated with the file descriptor
   //                    fildes, as described below (arg is ignored).
   public func getFlags() throws -> Flags {
-    return try Flags(_control(F_GETFD))
+    return try Flags(_control(Darwin.F_GETFD))
   }
 
   // F_SETFD            Set the file descriptor flags to arg.
   public func setFlags(_ value: Flags) throws {
-    _ = try _control(F_SETFD, value.rawValue)
+    _ = try _control(Darwin.F_SETFD, value.rawValue)
   }
 
   public struct StatusFlags: OptionSet {
@@ -94,12 +95,12 @@ extension FileDescriptor.Control {
   // F_GETFL            Get descriptor status flags, as described below (arg
   //                    is ignored).
   public func getStatusFlags() throws -> StatusFlags {
-    StatusFlags(try _control(F_GETFL))
+    StatusFlags(try _control(Darwin.F_GETFL))
   }
 
   // F_SETFL            Set descriptor status flags to arg.
   public func setStatusFlags(_ flags: StatusFlags) throws {
-    _ = try _control(F_SETFL, flags.rawValue)
+    _ = try _control(Darwin.F_SETFL, flags.rawValue)
   }
 
   public struct PIDOrPGID: RawRepresentable {
@@ -117,7 +118,7 @@ extension FileDescriptor.Control {
   //                    ing SIGIO and SIGURG signals; process groups are
   //                    returned as negative values (arg is ignored).
   public func getOwner() throws -> PIDOrPGID {
-    try PIDOrPGID(_control(F_GETOWN))
+    try PIDOrPGID(_control(Darwin.F_GETOWN))
   }
 
   // F_SETOWN           Set the process or process group to receive SIGIO and
@@ -125,7 +126,7 @@ extension FileDescriptor.Control {
   //                    plying arg as negative, otherwise arg is interpreted
   //                    as a process ID.
   public func setOwner(_ id: PIDOrPGID) throws {
-    _ = try _control(F_SETOWN, id.rawValue)
+    _ = try _control(Darwin.F_SETOWN, id.rawValue)
   }
 
   // F_GETPATH          Get the path of the file descriptor
@@ -136,7 +137,7 @@ extension FileDescriptor.Control {
   //                    MAXPATHLEN or greater.
   public func getPath(noFirmLink: Bool = false) throws -> Path {
     return try Path {
-      _ = try _control(noFirmLink ? F_GETPATH_NOFIRMLINK : F_GETPATH, $0)
+      _ = try _control(noFirmLink ? Darwin.F_GETPATH_NOFIRMLINK : Darwin.F_GETPATH, $0)
       return 1 + strlen($0.assumingMemoryBound(to: Int8.self))
     }
   }
@@ -177,13 +178,13 @@ extension FileDescriptor.Control {
     //       F_PEOFPOSMODE   Allocate from the physical end of file.  In this
     //                       case, fst_length indicates the number of newly
     //                       allocated bytes desired.
-    var arg = fstore_t(
+    var arg = Darwin.fstore_t(
       fst_flags: flags.rawValue,
-      fst_posmode: F_PEOFPOSMODE,
+      fst_posmode: Darwin.F_PEOFPOSMODE,
       fst_offset: 0,
       fst_length: COffsetT(bytesFromEnd),
       fst_bytesalloc: 0)
-    _ = try _control(F_PREALLOCATE, &arg)
+    _ = try _control(Darwin.F_PREALLOCATE, &arg)
     return Int64(arg.fst_bytesalloc)
   }
 
@@ -204,13 +205,13 @@ extension FileDescriptor.Control {
     // how to use the offset field.  The modes are as follows:
     //
     //       F_VOLPOSMODE    Allocate from the volume offset.
-    var arg = fstore_t(
+    var arg = Darwin.fstore_t(
       fst_flags: flags.rawValue,
-      fst_posmode: F_PEOFPOSMODE,
+      fst_posmode: Darwin.F_PEOFPOSMODE,
       fst_offset: COffsetT(regionStart),
       fst_length: COffsetT(length),
       fst_bytesalloc: 0)
-    _ = try _control(F_PREALLOCATE, &arg)
+    _ = try _control(Darwin.F_PREALLOCATE, &arg)
     return Int64(arg.fst_bytesalloc)
   }
 
@@ -230,9 +231,9 @@ extension FileDescriptor.Control {
     //             off_t     fp_offset;    /* IN: start of the region */
     //             off_t     fp_length;    /* IN: size of the region */
     //         } fpunchhole_t;
-    var arg = fpunchhole_t(
+    var arg = Darwin.fpunchhole_t(
       fp_flags: 0, reserved: 0, fp_offset: COffsetT(offset), fp_length: COffsetT(length))
-    _ = try _control(F_PUNCHHOLE, &arg)
+    _ = try _control(Darwin.F_PUNCHHOLE, &arg)
   }
 
   // F_SETSIZE          Truncate a file without zeroing space.  The calling
@@ -240,7 +241,7 @@ extension FileDescriptor.Control {
   public func setSize(to: Int64) throws {
     // Reading online code snippets show that size is passed indirectly...
     var size = COffsetT(to)
-    _ = try _control(F_SETSIZE, &size)
+    _ = try _control(Darwin.F_SETSIZE, &size)
   }
 
   // F_RDADVISE         Issue an advisory read async with no copy to user.
@@ -252,22 +253,22 @@ extension FileDescriptor.Control {
     //            off_t   ra_offset;  /* offset into the file */
     //            int     ra_count;   /* size of the read     */
     //         };
-    var arg = radvisory(ra_offset: COffsetT(offset), ra_count: CInt(length))
-    _ = try _control(F_RDADVISE, &arg)
+    var arg = Darwin.radvisory(ra_offset: COffsetT(offset), ra_count: CInt(length))
+    _ = try _control(Darwin.F_RDADVISE, &arg)
   }
 
   // F_RDAHEAD          Turn read ahead off/on.  A zero value in arg disables
   //                    read ahead.  A non-zero value in arg turns read ahead
   //                    on.
   public func enableReadAhead(_ value: Bool) throws {
-    _ = try _control(F_RDAHEAD, value ? 1 : 0)
+    _ = try _control(Darwin.F_RDAHEAD, value ? 1 : 0)
   }
 
   // F_NOCACHE          Turns data caching off/on. A non-zero value in arg
   //                    turns data caching off.  A value of zero in arg turns
   //                    data caching on.
   public func disableDataCaching(_ value: Bool) throws {
-    _ = try _control(F_NOCACHE, value ? 1 : 0)
+    _ = try _control(Darwin.F_NOCACHE, value ? 1 : 0)
   }
 
   // F_LOG2PHYS         Get disk device information.  Currently this only
@@ -286,7 +287,7 @@ extension FileDescriptor.Control {
     //             off_t     l2p_devoffset;    /* bytes into device */
     //         };
     var arg = log2phys(l2p_flags: 0, l2p_contigbytes: 0, l2p_devoffset: 0)
-    _ = try _control(F_LOG2PHYS, &arg)
+    _ = try _control(Darwin.F_LOG2PHYS, &arg)
     return arg.l2p_devoffset
   }
 
@@ -305,11 +306,11 @@ extension FileDescriptor.Control {
     //             off_t     l2p_devoffset;    /* IN: bytes into file;
     //                                            OUT: bytes into device */
     //         };
-    var arg = log2phys(
+    var arg = Darwin.log2phys(
       l2p_flags: 0,
       l2p_contigbytes: COffsetT(numContiguousBytesToQuery),
       l2p_devoffset: COffsetT(offset))
-    _ = try _control(F_LOG2PHYS_EXT, &arg)
+    _ = try _control(Darwin.F_LOG2PHYS_EXT, &arg)
     return (Int64(arg.l2p_contigbytes), Int64(arg.l2p_devoffset))
   }
 
@@ -336,7 +337,7 @@ extension FileDescriptor.Control {
   //                    ware support, which Apple SSDs are guaranteed to pro-
   //                    vide.
   public func syncBarrier() throws {
-    _ = try _control(F_BARRIERFSYNC)
+    _ = try _control(Darwin.F_BARRIERFSYNC)
   }
 
   // F_FULLFSYNC        Does the same thing as fsync(2) then asks the drive to
@@ -351,7 +352,7 @@ extension FileDescriptor.Control {
   //                    FireWire drives have also been known to ignore the
   //                    request to flush their buffered data.
   public func fullSync() throws {
-    _ = try _control(F_FULLFSYNC)
+    _ = try _control(Darwin.F_FULLFSYNC)
   }
 
   // F_SETNOSIGPIPE     Determines whether a SIGPIPE signal will be generated
@@ -360,7 +361,7 @@ extension FileDescriptor.Control {
   //                    is disabled for descriptor fildes, while an arg of
   //                    zero enables it (the default).
   public func disableSIGPIPE(_ value: Bool = true) throws {
-    _ = try _control(F_SETNOSIGPIPE, value ? 1 : 0)
+    _ = try _control(Darwin.F_SETNOSIGPIPE, value ? 1 : 0)
   }
 
   // F_GETNOSIGPIPE     Returns whether a SIGPIPE signal will be generated
@@ -368,10 +369,10 @@ extension FileDescriptor.Control {
   //                    is no reader.  The semantics of the return value match
   //                    those of the arg of F_SETNOSIGPIPE.
   public func hasDisabledSIGPIPE() throws -> Bool {
-    return try _control(F_GETNOSIGPIPE) != 0
+    return try _control(Darwin.F_GETNOSIGPIPE) != 0
   }
 
-  // FIXME: WFT, docs have the below comment but never mention bootstrap commands
+  // FIXME: WTF, docs have the below comment but never mention bootstrap commands
   //
   // The F_READBOOTSTRAP and F_WRITEBOOTSTRAP commands operate on the follow-
   // ing structure.

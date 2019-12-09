@@ -15,15 +15,20 @@ extension FileDescriptor {
 
 extension FileDescriptor {
   // TODO: The below 2 types are unified in C, should we do the same?
-  public enum AccessMode: CInt {
+  //
+  // TODO: Or, an option set maybe?
+  public struct AccessMode: RawRepresentable {
+    public var rawValue: CInt
+    public init(rawValue: CInt) { self.rawValue = rawValue }
+
     // O_RDONLY        open for reading only
-    case readOnly = 0x0
+    public var readOnly: AccessMode { AccessMode(rawValue: Darwin.O_RDONLY) }
 
     // O_WRONLY        open for writing only
-    case writeOnly = 0x1
+    public var writeOnly: AccessMode { AccessMode(rawValue: Darwin.O_WRONLY) }
 
     // O_RDWR          open for reading and writing
-    case readWrite = 0x2
+    public var readWrite: AccessMode { AccessMode(rawValue: Darwin.O_RDWR) }
   }
 
   public struct OpenOptions: OptionSet {
@@ -38,22 +43,22 @@ extension FileDescriptor {
     // being blocked for some reason (e.g., waiting for carrier on a dialup line),
     // open() returns immediately.  This flag also has the effect of making all
     // subsequent I/O on the open file non-blocking.
-    public static var nonBlocking: OpenOptions { OpenOptions(0x4) }
+    public static var nonBlocking: OpenOptions { OpenOptions(Darwin.O_NONBLOCK) }
 
     // O_APPEND        append on each write
     //
     // Opening a file with O_APPEND set causes each write on the file to be
     // appended to the end
-    public static var append: OpenOptions { OpenOptions(0x8) }
+    public static var append: OpenOptions { OpenOptions(Darwin.O_APPEND) }
 
     // O_CREAT         create file if it does not exist
-    public static var create: OpenOptions { OpenOptions(0x2_00) }
+    public static var create: OpenOptions { OpenOptions(Darwin.O_CREAT) }
 
     // O_TRUNC         truncate size to 0
     //
     // If O_TRUNC is specified and the file exists, the file is truncated to zero
     // length
-    public static var truncate: OpenOptions { OpenOptions(0x4_00) }
+    public static var truncate: OpenOptions { OpenOptions(Darwin.O_TRUNC) }
 
     // O_EXCL          error if O_CREAT and the file exists
     //
@@ -62,7 +67,7 @@ extension FileDescriptor {
     // mechanism.  If O_EXCL is set with O_CREAT and the last component of the
     // pathname is a symbolic link, open() will fail even if the symbolic link
     // points to a non-existent name.
-    public static var exclusiveCreate: OpenOptions { OpenOptions(0x8_00) }
+    public static var exclusiveCreate: OpenOptions { OpenOptions(Darwin.O_EXCL) }
 
     // O_SHLOCK        atomically obtain a shared lock
     //
@@ -70,7 +75,7 @@ extension FileDescriptor {
     // setting O_SHLOCK for a shared lock, or O_EXLOCK for an exclusive lock.  If
     // creating a file with O_CREAT, the request for the lock will never fail
     // (provided that the underlying filesystem supports locking).
-    public static var sharedLock: OpenOptions { OpenOptions(0x10) }
+    public static var sharedLock: OpenOptions { OpenOptions(Darwin.O_SHLOCK) }
 
     // O_EXLOCK        atomically obtain an exclusive lock
     //
@@ -78,56 +83,59 @@ extension FileDescriptor {
     // setting O_SHLOCK for a shared lock, or O_EXLOCK for an exclusive lock.  If
     // creating a file with O_CREAT, the request for the lock will never fail
     // (provided that the underlying filesystem supports locking).
-    public static var exclusiveLock: OpenOptions { OpenOptions(0x20) }
+    public static var exclusiveLock: OpenOptions { OpenOptions(Darwin.O_EXLOCK) }
 
     // O_NOFOLLOW      do not follow symlinks
     //
     // If O_NOFOLLOW is used in the mask and the target file passed to open() is a
     // symbolic link then the open() will fail.
-    public static var noFollow: OpenOptions { OpenOptions(0x1_00) }
+    public static var noFollow: OpenOptions { OpenOptions(Darwin.O_NOFOLLOW) }
 
     // O_SYMLINK       allow open of symlinks
     //
     // If O_SYMLINK is used in the mask and the target file passed to open() is a
     // symbolic link then the open() will be for the symbolic link itself, not
     // what it links to.
-    public static var symlink: OpenOptions { OpenOptions(0x20_00_00) }
+    public static var symlink: OpenOptions { OpenOptions(Darwin.O_SYMLINK) }
 
     // O_EVTONLY       descriptor requested for event notifications only
     //
     // The O_EVTONLY flag is only intended for monitoring a file for changes (e.g.
     // kqueue). Note: when this flag is used, the opened file will not prevent an
     // unmount of the volume that contains the file.
-    public static var eventOnly: OpenOptions { OpenOptions(0x80_00) }
+    public static var eventOnly: OpenOptions { OpenOptions(Darwin.O_EVTONLY) }
 
     // O_CLOEXEC       mark as close-on-exec
     //
     // The O_CLOEXEC flag causes the file descriptor to be marked as
     // close-on-exec, setting the FD_CLOEXEC flag.  The state of the file
     // descriptor flags can be inspected using the F_GETFD fcntl.
-    public static var closeOnExec: OpenOptions { OpenOptions(0x1_00_00_00) }
+    public static var closeOnExec: OpenOptions { OpenOptions(Darwin.O_CLOEXEC) }
 
   }
 
   // TODO: Consider breaking out seek into multiple APIs instead
-  public enum SeekOrigin: CInt {
+  public struct SeekOrigin: RawRepresentable {
+    public var rawValue: CInt
+    public init(rawValue: CInt) { self.rawValue = rawValue }
+
     // SEEK_SET: the offset is set to offset bytes.
-    case start = 0
+    public var start: SeekOrigin { SeekOrigin(rawValue: Darwin.SEEK_SET) }
 
     // SEEK_CUR: the offset is set to its current location plus offset bytes.
-    case current = 1
+    public var current: SeekOrigin { SeekOrigin(rawValue: Darwin.SEEK_CUR) }
 
     // SEEK_END: the offset is set to the size of the file plus offset bytes.
-    case end = 2
+    public var end: SeekOrigin { SeekOrigin(rawValue: Darwin.SEEK_END) }
 
     // SEEK_HOLE: the offset is set to the start of the next hole greater than
     // or equal to the supplied offset.  The definition of a hole is provided
     // below.
-    case nextHole = 3
+    public var nextHole: SeekOrigin { SeekOrigin(rawValue: Darwin.SEEK_HOLE) }
 
     // SEEK_DATA: the offset is set to the start of the next non-hole file
     // region greater than or equal to the supplied offset.
-    case nextData = 4
+    public var nextData: SeekOrigin { SeekOrigin(rawValue: Darwin.SEEK_DATA) }
   }
 }
 
