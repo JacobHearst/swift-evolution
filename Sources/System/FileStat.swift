@@ -108,15 +108,8 @@ extension FileStat {
 }
 
 extension FileStat {
-  public struct UserFlags: RawRepresentable {
-    public var rawValue: CUInt32T
-    public init(rawValue: CUInt32T) { self.rawValue = rawValue }
-
-    // TODO: Maybe an option set, define actual flags...
-  }
-
   // uint32_t st_flags; /* user defined flags for file */
-  public var userFlags: UserFlags { UserFlags(rawValue: self.rawValue.st_flags) }
+  public var userFlags: FileFlags { FileFlags(rawValue: self.rawValue.st_flags) }
 
   public struct GenerationID: RawRepresentable {
     public var rawValue: CUInt32T
@@ -127,6 +120,3 @@ extension FileStat {
   public var generation: GenerationID { GenerationID(rawValue: self.rawValue.st_gen) }
 
 }
-
-// TODO: chflags(2) for user flags
-

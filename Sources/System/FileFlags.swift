@@ -61,18 +61,6 @@ public struct FileFlags: OptionSet {
   public static var systemAppend: FileFlags {
     FileFlags(rawValue: CUInt(bitPattern: Darwin.SF_APPEND))
   }
-
-#if false
-  // The file is a dataless placeholder. The system will attempt to materialize
-  // it when accessed according to the dataless file materialization policy of
-  // the accessing thread or process. See getiopolicy_np(3).
-  //
-  // This flag is an internal flag and may not be set from user space.
-  public static var systemDataless: FileFlags {
-    FileFlags(rawValue: CUInt(bitPattern: Darwin.SF_DATALESSFAULT))
-  }
-#endif
-
 }
 
 extension FileDescriptor {
