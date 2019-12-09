@@ -1,4 +1,3 @@
-// FIXME: are suid sgid and savetext permissions, or split out?
 public struct FilePermissions: OptionSet {
   public let rawValue: CModeT
   public init(rawValue: CModeT) { self.rawValue = rawValue }

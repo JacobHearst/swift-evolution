@@ -39,7 +39,7 @@ public struct Path {
   }
 
   public init(nulTerminatedCPtr cPtr: UnsafePointer<CChar>) {
-    self.init(UnsafeBufferPointer(start: cPtr, count: 1+strlen(cPtr)))
+    self.init(UnsafeBufferPointer(start: cPtr, count: 1+_strlen(cPtr)))
   }
 
   public init(_ str: String) {
@@ -68,8 +68,7 @@ extension Path: ExpressibleByStringLiteral {
   }
 }
 
-import Darwin
 extension Path {
-  public static var maxLength: Int { Int(MAXPATHLEN) }
+  public static var maxLength: Int { Int(_MAXPATHLEN) }
 }
 

@@ -1,3 +1,6 @@
+// TODO: Consider making a struct
+// FIXME: Use values defined in Platform.swift instead of these hard coded values...
+
 public enum Errno: CInt, Error {
   // 0 Error 0.  Not used.
   case notUsed = 0
@@ -455,9 +458,7 @@ public enum Errno: CInt, Error {
   case notSupportedOnSocket = 102
 }
 
-import Darwin
 public var errno: Errno {
-  get { Errno(rawValue: Darwin.errno)! }
-  set { Darwin.errno = newValue.rawValue }
+  get { Errno(rawValue: _errno)! }
+  set { _errno = newValue.rawValue }
 }
-

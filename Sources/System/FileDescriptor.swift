@@ -1,5 +1,3 @@
-import Darwin
-
 public struct FileDescriptor: RawRepresentable {
   public let rawValue: CInt
   public init(rawValue: CInt) { self.rawValue = rawValue }
@@ -22,13 +20,13 @@ extension FileDescriptor {
     public init(rawValue: CInt) { self.rawValue = rawValue }
 
     // O_RDONLY        open for reading only
-    public var readOnly: AccessMode { AccessMode(rawValue: Darwin.O_RDONLY) }
+    public static var readOnly: AccessMode { AccessMode(rawValue: _O_RDONLY) }
 
     // O_WRONLY        open for writing only
-    public var writeOnly: AccessMode { AccessMode(rawValue: Darwin.O_WRONLY) }
+    public static var writeOnly: AccessMode { AccessMode(rawValue: _O_WRONLY) }
 
     // O_RDWR          open for reading and writing
-    public var readWrite: AccessMode { AccessMode(rawValue: Darwin.O_RDWR) }
+    public static var readWrite: AccessMode { AccessMode(rawValue: _O_RDWR) }
   }
 
   public struct OpenOptions: OptionSet {
@@ -43,22 +41,22 @@ extension FileDescriptor {
     // being blocked for some reason (e.g., waiting for carrier on a dialup line),
     // open() returns immediately.  This flag also has the effect of making all
     // subsequent I/O on the open file non-blocking.
-    public static var nonBlocking: OpenOptions { OpenOptions(Darwin.O_NONBLOCK) }
+    public static var nonBlocking: OpenOptions { OpenOptions(_O_NONBLOCK) }
 
     // O_APPEND        append on each write
     //
     // Opening a file with O_APPEND set causes each write on the file to be
     // appended to the end
-    public static var append: OpenOptions { OpenOptions(Darwin.O_APPEND) }
+    public static var append: OpenOptions { OpenOptions(_O_APPEND) }
 
     // O_CREAT         create file if it does not exist
-    public static var create: OpenOptions { OpenOptions(Darwin.O_CREAT) }
+    public static var create: OpenOptions { OpenOptions(_O_CREAT) }
 
     // O_TRUNC         truncate size to 0
     //
     // If O_TRUNC is specified and the file exists, the file is truncated to zero
     // length
-    public static var truncate: OpenOptions { OpenOptions(Darwin.O_TRUNC) }
+    public static var truncate: OpenOptions { OpenOptions(_O_TRUNC) }
 
     // O_EXCL          error if O_CREAT and the file exists
     //
@@ -67,7 +65,7 @@ extension FileDescriptor {
     // mechanism.  If O_EXCL is set with O_CREAT and the last component of the
     // pathname is a symbolic link, open() will fail even if the symbolic link
     // points to a non-existent name.
-    public static var exclusiveCreate: OpenOptions { OpenOptions(Darwin.O_EXCL) }
+    public static var exclusiveCreate: OpenOptions { OpenOptions(_O_EXCL) }
 
     // O_SHLOCK        atomically obtain a shared lock
     //
@@ -75,7 +73,7 @@ extension FileDescriptor {
     // setting O_SHLOCK for a shared lock, or O_EXLOCK for an exclusive lock.  If
     // creating a file with O_CREAT, the request for the lock will never fail
     // (provided that the underlying filesystem supports locking).
-    public static var sharedLock: OpenOptions { OpenOptions(Darwin.O_SHLOCK) }
+    public static var sharedLock: OpenOptions { OpenOptions(_O_SHLOCK) }
 
     // O_EXLOCK        atomically obtain an exclusive lock
     //
@@ -83,34 +81,34 @@ extension FileDescriptor {
     // setting O_SHLOCK for a shared lock, or O_EXLOCK for an exclusive lock.  If
     // creating a file with O_CREAT, the request for the lock will never fail
     // (provided that the underlying filesystem supports locking).
-    public static var exclusiveLock: OpenOptions { OpenOptions(Darwin.O_EXLOCK) }
+    public static var exclusiveLock: OpenOptions { OpenOptions(_O_EXLOCK) }
 
     // O_NOFOLLOW      do not follow symlinks
     //
     // If O_NOFOLLOW is used in the mask and the target file passed to open() is a
     // symbolic link then the open() will fail.
-    public static var noFollow: OpenOptions { OpenOptions(Darwin.O_NOFOLLOW) }
+    public static var noFollow: OpenOptions { OpenOptions(_O_NOFOLLOW) }
 
     // O_SYMLINK       allow open of symlinks
     //
     // If O_SYMLINK is used in the mask and the target file passed to open() is a
     // symbolic link then the open() will be for the symbolic link itself, not
     // what it links to.
-    public static var symlink: OpenOptions { OpenOptions(Darwin.O_SYMLINK) }
+    public static var symlink: OpenOptions { OpenOptions(_O_SYMLINK) }
 
     // O_EVTONLY       descriptor requested for event notifications only
     //
     // The O_EVTONLY flag is only intended for monitoring a file for changes (e.g.
     // kqueue). Note: when this flag is used, the opened file will not prevent an
     // unmount of the volume that contains the file.
-    public static var eventOnly: OpenOptions { OpenOptions(Darwin.O_EVTONLY) }
+    public static var eventOnly: OpenOptions { OpenOptions(_O_EVTONLY) }
 
     // O_CLOEXEC       mark as close-on-exec
     //
     // The O_CLOEXEC flag causes the file descriptor to be marked as
     // close-on-exec, setting the FD_CLOEXEC flag.  The state of the file
     // descriptor flags can be inspected using the F_GETFD fcntl.
-    public static var closeOnExec: OpenOptions { OpenOptions(Darwin.O_CLOEXEC) }
+    public static var closeOnExec: OpenOptions { OpenOptions(_O_CLOEXEC) }
 
   }
 
@@ -120,22 +118,22 @@ extension FileDescriptor {
     public init(rawValue: CInt) { self.rawValue = rawValue }
 
     // SEEK_SET: the offset is set to offset bytes.
-    public var start: SeekOrigin { SeekOrigin(rawValue: Darwin.SEEK_SET) }
+    public static var start: SeekOrigin { SeekOrigin(rawValue: _SEEK_SET) }
 
     // SEEK_CUR: the offset is set to its current location plus offset bytes.
-    public var current: SeekOrigin { SeekOrigin(rawValue: Darwin.SEEK_CUR) }
+    public static var current: SeekOrigin { SeekOrigin(rawValue: _SEEK_CUR) }
 
     // SEEK_END: the offset is set to the size of the file plus offset bytes.
-    public var end: SeekOrigin { SeekOrigin(rawValue: Darwin.SEEK_END) }
+    public static var end: SeekOrigin { SeekOrigin(rawValue: _SEEK_END) }
 
     // SEEK_HOLE: the offset is set to the start of the next hole greater than
     // or equal to the supplied offset.  The definition of a hole is provided
     // below.
-    public var nextHole: SeekOrigin { SeekOrigin(rawValue: Darwin.SEEK_HOLE) }
+    public static var nextHole: SeekOrigin { SeekOrigin(rawValue: _SEEK_HOLE) }
 
     // SEEK_DATA: the offset is set to the start of the next non-hole file
     // region greater than or equal to the supplied offset.
-    public var nextData: SeekOrigin { SeekOrigin(rawValue: Darwin.SEEK_DATA) }
+    public static var nextData: SeekOrigin { SeekOrigin(rawValue: _SEEK_DATA) }
   }
 }
 
@@ -150,29 +148,29 @@ extension FileDescriptor {
     let oFlag = mode.rawValue | options.rawValue
     let desc: CInt
     if let permissions = permissions {
-      desc = Darwin.open(path.bytes, oFlag, permissions.rawValue)
+      desc = _open(path.bytes, oFlag, permissions.rawValue)
     } else {
       precondition(!options.contains(.create), "Create must be given permissions")
-      desc = Darwin.open(path.bytes, oFlag)
+      desc = _open(path.bytes, oFlag)
     }
     return try FileDescriptor(_checking: desc)
   }
 
   public func close() throws {
-    guard Darwin.close(self.rawValue) != -1 else { throw errno }
+    guard _close(self.rawValue) != -1 else { throw errno }
   }
 
   public func seek(
     offset: Int64, from whence: FileDescriptor.SeekOrigin
   ) throws -> Int64 {
-    let newOffset = Darwin.lseek(self.rawValue, COffsetT(offset), whence.rawValue)
+    let newOffset = _lseek(self.rawValue, COffsetT(offset), whence.rawValue)
     guard newOffset != -1 else { throw errno }
     return Int64(newOffset)
   }
 
   // Uses cursor position
   public func read(into: UnsafeMutableRawBufferPointer) throws -> Int {
-    let numBytes = Darwin.read(self.rawValue, into.baseAddress, into.count)
+    let numBytes = _read(self.rawValue, into.baseAddress, into.count)
     guard numBytes >= 0 else { throw errno }
     return numBytes
   }
@@ -180,7 +178,7 @@ extension FileDescriptor {
   public func read(
     fromAbsoluteOffset offset: Int64, into: UnsafeMutableRawBufferPointer
   ) throws -> Int {
-    let numBytes = Darwin.pread(self.rawValue, into.baseAddress, into.count, offset)
+    let numBytes = _pread(self.rawValue, into.baseAddress, into.count, offset)
     guard numBytes >= 0 else { throw errno }
     return numBytes
   }

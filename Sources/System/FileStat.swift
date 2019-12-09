@@ -1,9 +1,7 @@
-
 public struct FileStat: RawRepresentable {
   public var rawValue: CStat
   public init(rawValue: CStat) { self.rawValue = rawValue }
 }
-
 
 extension FileStat {
   public struct DeviceID: RawRepresentable {
@@ -23,35 +21,38 @@ extension FileStat {
 extension FileStat {
   private var stMode: CModeT { self.rawValue.st_mode }
 
-  public enum FileType: CModeT {
+  public struct FileType: RawRepresentable {
+    public var rawValue: CModeT
+    public init(rawValue: CModeT) { self.rawValue = rawValue }
+
     // S_IFIFO  0010000  /* named pipe (fifo) */
-    case fifo = 0o010000
+    public static var fifo: FileType { FileType(rawValue: _S_IFIFO) }
 
     // S_IFCHR  0020000  /* character special */
-    case characterDevice = 0o020000
+    public static var characterDevice: FileType { FileType(rawValue: _S_IFCHR) }
 
     // S_IFDIR  0040000  /* directory */
-    case directory = 0o040000
+    public static var directory: FileType { FileType(rawValue: _S_IFDIR) }
 
     // S_IFBLK  0060000  /* block special */
-    case blockDevice = 0o060000
+    public static var blockDevice: FileType { FileType(rawValue: _S_IFBLK) }
 
     // S_IFREG  0100000  /* regular */
-    case regular = 0o100000
+    public static var regular: FileType { FileType(rawValue: _S_IFREG) }
 
     // S_IFLNK  0120000  /* symbolic link */
-    case symbolicLink = 0o120000
+    public static var symbolicLink: FileType { FileType(rawValue: _S_IFLNK) }
 
     // S_IFSOCK 0140000  /* socket */
-    case socket = 0o140000
+    public static var socket: FileType { FileType(rawValue: _S_IFSOCK) }
 
     // S_IFWHT  0160000  /* whiteout */
-    case whiteout = 0o160000
+    public static var whiteout: FileType { FileType(rawValue: _S_IFWHT) }
   }
 
-  // TODO: Are these always mutually exclusive?
-  public var type: FileType { FileType(rawValue: stMode & 0o170000)! }
+  public var type: FileType { FileType(rawValue: stMode & _S_IFMT) }
 
+  // FIXME: Remove hard coded number, maybe have a mask in Platform.swift
   public var permissions: FilePermissions { FilePermissions(rawValue: stMode & 0o7777) }
 }
 
