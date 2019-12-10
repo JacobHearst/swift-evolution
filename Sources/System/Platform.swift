@@ -12,15 +12,15 @@ public typealias CUInt32T = UInt32
 public typealias CUInt = u_int
 
 public typealias CModeT = mode_t
-public typealias COffsetT = off_t
+public typealias COffT = off_t
 
 public typealias CFILE = FILE
 
 public typealias CACLT = acl_t
-public typealias CACLTagT = acl_tag_t
-public typealias CACLFlagT = acl_flag_t
+public typealias CACLTagT = acl_tag_t.RawValue
+public typealias CACLFlagT = acl_flag_t.RawValue
 public typealias CACLEntryT = acl_entry_t
-public typealias CACLPermT = acl_perm_t
+public typealias CACLPermT = acl_perm_t.RawValue
 
 public typealias CDevT = dev_t
 public typealias CNLinkT = nlink_t
@@ -36,6 +36,12 @@ internal typealias CFStoreT = fstore_t
 internal typealias CFPunchholdT = fpunchhole_t
 internal typealias CRAdvisory = radvisory
 internal typealias CLog2Phys = log2phys
+
+internal typealias CSockLenT = socklen_t
+internal typealias CSockAddr = sockaddr
+internal typealias CSockAddrIn = sockaddr_in
+internal typealias CSockAddrUn = sockaddr_un
+
 
 // MARK: - Values
 
@@ -222,39 +228,54 @@ internal var _F_FULLFSYNC: CInt { F_FULLFSYNC }
 internal var _F_SETNOSIGPIPE: CInt { F_SETNOSIGPIPE }
 internal var _F_GETNOSIGPIPE: CInt { F_GETNOSIGPIPE }
 
+// Sockets
+internal var _PF_LOCAL: CInt { PF_LOCAL }
+internal var _PF_UNIX: CInt { PF_UNIX }
+internal var _PF_INET: CInt { PF_INET }
+internal var _PF_ROUTE: CInt { PF_ROUTE }
+internal var _PF_KEY: CInt { PF_KEY }
+internal var _PF_INET6: CInt { PF_INET6 }
+internal var _PF_SYSTEM: CInt { PF_SYSTEM }
+internal var _PF_NDRV: CInt { PF_NDRV }
+
+internal var _SOCK_STREAM: CInt { SOCK_STREAM }
+internal var _SOCK_DGRAM: CInt { SOCK_DGRAM }
+internal var _SOCK_RAW: CInt { SOCK_RAW }
+
+
 // ACL permissions
-internal var _ACL_READ_DATA: CACLPermT { ACL_READ_DATA }
-internal var _ACL_LIST_DIRECTORY: CACLPermT { ACL_LIST_DIRECTORY }
-internal var _ACL_WRITE_DATA: CACLPermT { ACL_WRITE_DATA }
-internal var _ACL_ADD_FILE: CACLPermT { ACL_ADD_FILE }
-internal var _ACL_EXECUTE: CACLPermT { ACL_EXECUTE }
-internal var _ACL_SEARCH: CACLPermT { ACL_SEARCH }
-internal var _ACL_DELETE: CACLPermT { ACL_DELETE }
-internal var _ACL_APPEND_DATA: CACLPermT { ACL_APPEND_DATA }
-internal var _ACL_ADD_SUBDIRECTORY: CACLPermT { ACL_ADD_SUBDIRECTORY }
-internal var _ACL_DELETE_CHILD: CACLPermT { ACL_DELETE_CHILD }
-internal var _ACL_READ_ATTRIBUTES: CACLPermT { ACL_READ_ATTRIBUTES }
-internal var _ACL_WRITE_ATTRIBUTES: CACLPermT { ACL_WRITE_ATTRIBUTES }
-internal var _ACL_READ_EXTATTRIBUTES: CACLPermT { ACL_READ_EXTATTRIBUTES }
-internal var _ACL_WRITE_EXTATTRIBUTES: CACLPermT { ACL_WRITE_EXTATTRIBUTES }
-internal var _ACL_READ_SECURITY: CACLPermT { ACL_READ_SECURITY }
-internal var _ACL_WRITE_SECURITY: CACLPermT { ACL_WRITE_SECURITY }
-internal var _ACL_CHANGE_OWNER: CACLPermT { ACL_CHANGE_OWNER }
-internal var _ACL_SYNCHRONIZE: CACLPermT { ACL_SYNCHRONIZE }
+internal var _ACL_READ_DATA: CACLPermT { ACL_READ_DATA.rawValue }
+internal var _ACL_LIST_DIRECTORY: CACLPermT { ACL_LIST_DIRECTORY.rawValue }
+internal var _ACL_WRITE_DATA: CACLPermT { ACL_WRITE_DATA.rawValue }
+internal var _ACL_ADD_FILE: CACLPermT { ACL_ADD_FILE.rawValue }
+internal var _ACL_EXECUTE: CACLPermT { ACL_EXECUTE.rawValue }
+internal var _ACL_SEARCH: CACLPermT { ACL_SEARCH.rawValue }
+internal var _ACL_DELETE: CACLPermT { ACL_DELETE.rawValue }
+internal var _ACL_APPEND_DATA: CACLPermT { ACL_APPEND_DATA.rawValue }
+internal var _ACL_ADD_SUBDIRECTORY: CACLPermT { ACL_ADD_SUBDIRECTORY.rawValue }
+internal var _ACL_DELETE_CHILD: CACLPermT { ACL_DELETE_CHILD.rawValue }
+internal var _ACL_READ_ATTRIBUTES: CACLPermT { ACL_READ_ATTRIBUTES.rawValue }
+internal var _ACL_WRITE_ATTRIBUTES: CACLPermT { ACL_WRITE_ATTRIBUTES.rawValue }
+internal var _ACL_READ_EXTATTRIBUTES: CACLPermT { ACL_READ_EXTATTRIBUTES.rawValue }
+internal var _ACL_WRITE_EXTATTRIBUTES: CACLPermT { ACL_WRITE_EXTATTRIBUTES.rawValue }
+internal var _ACL_READ_SECURITY: CACLPermT { ACL_READ_SECURITY.rawValue }
+internal var _ACL_WRITE_SECURITY: CACLPermT { ACL_WRITE_SECURITY.rawValue }
+internal var _ACL_CHANGE_OWNER: CACLPermT { ACL_CHANGE_OWNER.rawValue }
+internal var _ACL_SYNCHRONIZE: CACLPermT { ACL_SYNCHRONIZE.rawValue }
 
 // ACL tags
-internal var _ACL_UNDEFINED_TAG: CACLTagT { ACL_UNDEFINED_TAG }
-internal var _ACL_EXTENDED_ALLOW: CACLTagT { ACL_EXTENDED_ALLOW }
-internal var _ACL_EXTENDED_DENY: CACLTagT { ACL_EXTENDED_DENY }
+internal var _ACL_UNDEFINED_TAG: CACLTagT { ACL_UNDEFINED_TAG.rawValue }
+internal var _ACL_EXTENDED_ALLOW: CACLTagT { ACL_EXTENDED_ALLOW.rawValue }
+internal var _ACL_EXTENDED_DENY: CACLTagT { ACL_EXTENDED_DENY.rawValue }
 
 // ACL flags
-internal var _ACL_FLAG_DEFER_INHERIT: CACLFlagT { ACL_FLAG_DEFER_INHERIT }
-internal var _ACL_FLAG_NO_INHERIT: CACLFlagT { ACL_FLAG_NO_INHERIT }
-internal var _ACL_ENTRY_INHERITED: CACLFlagT { ACL_ENTRY_INHERITED }
-internal var _ACL_ENTRY_FILE_INHERIT: CACLFlagT { ACL_ENTRY_FILE_INHERIT }
-internal var _ACL_ENTRY_DIRECTORY_INHERIT: CACLFlagT { ACL_ENTRY_DIRECTORY_INHERIT }
-internal var _ACL_ENTRY_LIMIT_INHERIT: CACLFlagT { ACL_ENTRY_LIMIT_INHERIT }
-internal var _ACL_ENTRY_ONLY_INHERIT: CACLFlagT { ACL_ENTRY_ONLY_INHERIT }
+internal var _ACL_FLAG_DEFER_INHERIT: CACLFlagT { ACL_FLAG_DEFER_INHERIT.rawValue }
+internal var _ACL_FLAG_NO_INHERIT: CACLFlagT { ACL_FLAG_NO_INHERIT.rawValue }
+internal var _ACL_ENTRY_INHERITED: CACLFlagT { ACL_ENTRY_INHERITED.rawValue }
+internal var _ACL_ENTRY_FILE_INHERIT: CACLFlagT { ACL_ENTRY_FILE_INHERIT.rawValue }
+internal var _ACL_ENTRY_DIRECTORY_INHERIT: CACLFlagT { ACL_ENTRY_DIRECTORY_INHERIT.rawValue }
+internal var _ACL_ENTRY_LIMIT_INHERIT: CACLFlagT { ACL_ENTRY_LIMIT_INHERIT.rawValue }
+internal var _ACL_ENTRY_ONLY_INHERIT: CACLFlagT { ACL_ENTRY_ONLY_INHERIT.rawValue }
 
 // MARK: - System Calls
 
@@ -295,6 +316,11 @@ internal let _chflags = chflags
 internal let _fstat = fstat
 internal let _lstat = lstat
 internal let _stat = stat
+
+// Sockets
+internal let _socket = socket
+internal let _connect = connect
+
 
 // C stdlib
 internal let _strlen = strlen

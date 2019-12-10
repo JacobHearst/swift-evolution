@@ -180,7 +180,7 @@ extension FileDescriptor.Control {
       fst_flags: flags.rawValue,
       fst_posmode: _F_PEOFPOSMODE,
       fst_offset: 0,
-      fst_length: COffsetT(bytesFromEnd),
+      fst_length: COffT(bytesFromEnd),
       fst_bytesalloc: 0)
     _ = try cntl(_F_PREALLOCATE, &arg)
     return Int64(arg.fst_bytesalloc)
@@ -206,8 +206,8 @@ extension FileDescriptor.Control {
     var arg = CFStoreT(
       fst_flags: flags.rawValue,
       fst_posmode: _F_PEOFPOSMODE,
-      fst_offset: COffsetT(regionStart),
-      fst_length: COffsetT(length),
+      fst_offset: COffT(regionStart),
+      fst_length: COffT(length),
       fst_bytesalloc: 0)
     _ = try cntl(_F_PREALLOCATE, &arg)
     return Int64(arg.fst_bytesalloc)
@@ -230,7 +230,7 @@ extension FileDescriptor.Control {
     //             off_t     fp_length;    /* IN: size of the region */
     //         } fpunchhole_t;
     var arg = CFPunchholdT(
-      fp_flags: 0, reserved: 0, fp_offset: COffsetT(offset), fp_length: COffsetT(length))
+      fp_flags: 0, reserved: 0, fp_offset: COffT(offset), fp_length: COffT(length))
     _ = try cntl(_F_PUNCHHOLE, &arg)
   }
 
@@ -238,7 +238,7 @@ extension FileDescriptor.Control {
   //                    process must have root privileges.
   public func setSize(to: Int64) throws {
     // Reading online code snippets show that size is passed indirectly...
-    var size = COffsetT(to)
+    var size = COffT(to)
     _ = try cntl(_F_SETSIZE, &size)
   }
 
@@ -251,7 +251,7 @@ extension FileDescriptor.Control {
     //            off_t   ra_offset;  /* offset into the file */
     //            int     ra_count;   /* size of the read     */
     //         };
-    var arg = CRAdvisory(ra_offset: COffsetT(offset), ra_count: CInt(length))
+    var arg = CRAdvisory(ra_offset: COffT(offset), ra_count: CInt(length))
     _ = try cntl(_F_RDADVISE, &arg)
   }
 
@@ -306,8 +306,8 @@ extension FileDescriptor.Control {
     //         };
     var arg = CLog2Phys(
       l2p_flags: 0,
-      l2p_contigbytes: COffsetT(numContiguousBytesToQuery),
-      l2p_devoffset: COffsetT(offset))
+      l2p_contigbytes: COffT(numContiguousBytesToQuery),
+      l2p_devoffset: COffT(offset))
     _ = try cntl(_F_LOG2PHYS_EXT, &arg)
     return (Int64(arg.l2p_contigbytes), Int64(arg.l2p_devoffset))
   }

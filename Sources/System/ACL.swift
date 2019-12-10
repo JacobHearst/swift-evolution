@@ -92,21 +92,6 @@ public struct ACLPermissions: OptionSet {
   public static var synchronize: ACLPermissions {
     ACLPermissions(_ACL_SYNCHRONIZE)
   }
-
-  // Below needed for SetAlgebra conformance since acl_perm_t is a struct in Darwin overlay
-  public init() { self.init(RawValue(rawValue: 0)) }
-
-  public mutating func formUnion(_ other: __owned Self) {
-    self = Self(rawValue: RawValue(self.rawValue.rawValue | other.rawValue.rawValue))
-  }
-
-  public mutating func formIntersection(_ other: Self) {
-    self = Self(rawValue: RawValue(self.rawValue.rawValue & other.rawValue.rawValue))
-  }
-
-  public mutating func formSymmetricDifference(_ other: __owned Self) {
-    self = Self(rawValue: RawValue(self.rawValue.rawValue ^ other.rawValue.rawValue))
-  }
 }
 
 // TODO: Darwin module imports acl_tag_t as a struct, but isn't this exclusive?
@@ -162,21 +147,6 @@ public struct ACLEntryFlags: OptionSet {
   // ACL_ENTRY_ONLY_INHERIT
   public static var entryOnlyInherit: ACLEntryFlags {
     ACLEntryFlags(_ACL_ENTRY_ONLY_INHERIT)
-  }
-
-  // Below needed for SetAlgebra conformance since acl_tag_t is a struct in Darwin overlay
-  public init() { self.init(RawValue(rawValue: 0)) }
-
-  public mutating func formUnion(_ other: __owned Self) {
-    self = Self(rawValue: RawValue(self.rawValue.rawValue | other.rawValue.rawValue))
-  }
-
-  public mutating func formIntersection(_ other: Self) {
-    self = Self(rawValue: RawValue(self.rawValue.rawValue & other.rawValue.rawValue))
-  }
-
-  public mutating func formSymmetricDifference(_ other: __owned Self) {
-    self = Self(rawValue: RawValue(self.rawValue.rawValue ^ other.rawValue.rawValue))
   }
 }
 

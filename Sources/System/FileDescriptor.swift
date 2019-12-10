@@ -5,7 +5,7 @@ public struct FileDescriptor: RawRepresentable {
 }
 
 extension FileDescriptor {
-  fileprivate init(_checking fd: CInt) throws {
+  internal init(_checking fd: CInt) throws {
     guard fd != -1 else { throw errno }
     self.init(fd)
   }
@@ -163,7 +163,7 @@ extension FileDescriptor {
   public func seek(
     offset: Int64, from whence: FileDescriptor.SeekOrigin
   ) throws -> Int64 {
-    let newOffset = _lseek(self.rawValue, COffsetT(offset), whence.rawValue)
+    let newOffset = _lseek(self.rawValue, COffT(offset), whence.rawValue)
     guard newOffset != -1 else { throw errno }
     return Int64(newOffset)
   }
