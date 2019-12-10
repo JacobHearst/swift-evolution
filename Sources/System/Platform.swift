@@ -292,6 +292,10 @@ internal let _fflush = fflush
 internal let _fchflags = fchflags
 internal let _chflags = chflags
 
+internal let _fstat = fstat
+internal let _lstat = lstat
+internal let _stat = stat
+
 // C stdlib
 internal let _strlen = strlen
 

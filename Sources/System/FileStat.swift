@@ -121,3 +121,22 @@ extension FileStat {
   public var generation: GenerationID { GenerationID(rawValue: self.rawValue.st_gen) }
 
 }
+
+extension FileDescriptor {
+  public func stat() throws -> FileStat {
+    var result = FileStat.RawValue()
+    guard _fstat(self.rawValue, &result) == 0 else { throw errno }
+    return FileStat(rawValue: result)
+  }
+}
+
+extension Path {
+  public func stat(followSymlinks: Bool = true) throws -> FileStat {
+    var result = FileStat.RawValue()
+    let stat = followSymlinks ? _stat : _lstat
+    guard stat(self.bytes, &result) == 0 else { throw errno }
+    return FileStat(rawValue: result)
+  }
+}
+
+// TODO: where does `fstatat` fit in?
