@@ -12,9 +12,6 @@ extension FileDescriptor {
 }
 
 extension FileDescriptor {
-  // TODO: The below 2 types are unified in C, should we do the same?
-  //
-  // TODO: Or, an option set maybe?
   public struct AccessMode: RawRepresentable {
     public var rawValue: CInt
     public init(rawValue: CInt) { self.rawValue = rawValue }

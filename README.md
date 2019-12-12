@@ -6,7 +6,8 @@ A platform-specific library providing interfaces to syscalls and relevant curren
 
 ### "What is a syscall?"
 
-This package is probably not for you, refer to Foundation and/or higher-level packages.
+If you're asking this question, this package is probably not for you.
+Refer to Foundation and/or higher-level packages.
 
 A syscall is the lowest-level interface for user-space processes to interact with the operating system. This
 package provides a more convenient, Swiftier interface, but still sits at the lowest level available. Tricky details,
@@ -15,6 +16,16 @@ esoteric and not portable.
 
 In short, while this library tries to provide Swifty interfaces when reasonable, whenever "Swifty" is at
 odds with "Systems-y", "Systems-y" wins.
+
+### "I need a platform abstraction layer"
+
+This is not that. Refer to Foundation and/or higher-level packages.
+
+### "Is this complete?"
+
+Completeness is not a requirement or goal of this package.
+API is added as-needed, provided additions design for the basic patterns, conventions,
+and relevant currency types.
 
 
 ## Provides
@@ -128,25 +139,83 @@ public struct Errno: RawRepresentable, Error {
 ```
 
 
-## TODO
 
-* Threading (`pthread`, TLS, ...)
+## Next Steps
+
+
+### 1. Coverage for SwiftNIO
+
+SwiftNIO is a perfect example of a client of this package. Complete coverage for
+the functionality in NIO's `System.swift` demonstrate the utility of this library and
+provides a rough guide for what functionality should be present in the intial release.
+
+NIO would additionally need:
+
+#### Sockets and network interfaces
+
+Sockets and networking provide a large and important API surface area for NIO.
+They also present design considerations (e.g. separate Socket type vs FileDescriptor type?).
+
+#### Polling and events
+
+`poll`, `select`, `kqueue`, and `epoll` are all highly relevant for asynchronous programming 
+around resources.
+
+
+#### Threading with pthreads
+
+NIO uses pthreads in their threading implementation. Pthreads are also a way to access
+useful structures such as thread-local-storage, and thus should be surfaced better
+for low level libraries.
+
+Pthreads, like directory support below, may surface some challenges with providing
+Swifty APIs around what's currently defined.
+
+
+### 2. Evaluate currency types
+
+Potential clients include low-level libraries that wish to use currency types
+declared here, such as `FileDescriptor` and the managed `Path` type.
+
+We should make sure our currency types are adequate for such usage, and
+potentially work with such clients to reduce their dependencies on
+platform-specific currency types.
+
+
+### 3. Directory navigation
+
+Covering directory-related calls might illustrate some of the challenges involved in
+providing Swifty interfaces around systems designed in a very non-Swifty way. This
+package is more interested in wrapping the lowest-level relevant syscalls, and layering
+functionality on top of that, then in reexposing the C standard library.
+
+E.g., Darwin's library should provide wrappers and layered functionality
+around `getattrlistbulk`
+
+### 4. Enlist platform experts
+
+Darwin, Linux, and Windows have specific platform considerations about the right calls to
+expose and how to expose them. We should reach out and enlist the guidance of platform
+experts.
+
+
+### 5. Misc TODOs
+
 * Process operations (`exit`, `fork`, `posix_spawn`, `kill`, `getpid`, `wait`, ...)
-* More sockets
 * Path components
 * File locking (`fcntl` file locking, `flock`, ...)
 * More error info ( `strerror`, ...)
-* Directory info/navigation (`dir`, `dirent`, ...)
 * More file operations (`chmod`, `chown`, `symlink`, `link`, `unlink`, ...)
 * More permissions (`acl_tag_t`, flags, permissions, ...)
 
 
-#### `EINTR` and others
+
+## TODO: `EINTR` and others
 
 Consider doing the "correct" thing of always retrying on `EINTR` (except for `close`, because reasons).
 Need to figure out some kind of watchdog, etc., and some calls such as file close are dubious.
 
-`EAGAIN/WOULDBLOCK` should be surfaced cheaply
-(TODO: check if errors are too heavy weight and what to do about it).
-We really would want typed throws, no reason throwing an `Int32` should be expensive or indirect.
+`EAGAIN/WOULDBLOCK` should be surfaced cheaply. We really would want typed throws,
+no reason throwing an `Int32` should be expensive or indirect. Alternatively, some calls
+may be marked `@inlinable` to try to allow the compiler to optimize away intermediary overhead.
 
