@@ -1,5 +1,5 @@
 extension FileDescriptor {
-  // Namespace for `fcntl` APIs
+  // Namespace for enumerated `fcntl` APIs
   public struct Control {
     internal let fd: FileDescriptor
     internal init(_ fd: FileDescriptor) { self.fd = fd }
@@ -10,23 +10,41 @@ extension FileDescriptor {
 }
 
 extension FileDescriptor.Control {
-  private func cntl(_ command: CInt) throws -> CInt {
+  fileprivate func cntl(_ command: CInt) throws -> CInt {
     let value = _fcntl(self.rawValue, command)
     guard value != -1 else { throw errno }
     return value
   }
-  private func cntl(_ command: CInt, _ arg: CInt) throws -> CInt {
+  fileprivate func cntl(_ command: CInt, _ arg: CInt) throws -> CInt {
     let value = _fcntl(self.rawValue, command, arg)
     guard value != -1 else { throw errno }
     return value
   }
-  private func cntl(
+  fileprivate func cntl(
     _ command: CInt, _ ptr: UnsafeMutableRawPointer
   ) throws -> CInt {
     let value = _fcntl(self.rawValue, command, ptr)
     guard value != -1 else { throw errno }
     return value
   }
+}
+
+// Provide escape hatches for unenumerated `fcntl` commands
+extension FileDescriptor {
+  public func fcntl(command: CInt) throws -> CInt {
+    try control.cntl(command)
+  }
+  public func fcntl(command: CInt, _ arg: CInt) throws -> CInt {
+    try control.cntl(command, arg)
+  }
+  public func fcntl(
+    command: CInt, _ ptr: UnsafeMutableRawPointer
+  ) throws -> CInt {
+    try control.cntl(command, ptr)
+  }
+}
+
+extension FileDescriptor.Control {
 
   // F_DUPFD            Return a new descriptor as follows:
   //
@@ -383,104 +401,3 @@ extension FileDescriptor.Control {
 }
 
 // TODO File locking
-
-// Several commands are available for doing advisory file locking; they all
-// operate on the following structure:
-//
-//         struct flock {
-//             off_t       l_start;    /* starting offset */
-//             off_t       l_len;      /* len = 0 means until end of file */
-//             pid_t       l_pid;      /* lock owner */
-//             short       l_type;     /* lock type: read/write, etc. */
-//             short       l_whence;   /* type of l_start */
-//         };
-//
-// The commands available for advisory record locking are as follows:
-//
-// F_GETLK    Get the first lock that blocks the lock description pointed to
-//            by the third argument, arg, taken as a pointer to a struct
-//            flock (see above).  The information retrieved overwrites the
-//            information passed to fcntl in the flock structure.  If no
-//            lock is found that would prevent this lock from being created,
-//            the structure is left unchanged by this function call except
-//            for the lock type which is set to F_UNLCK.
-//
-// F_SETLK    Set or clear a file segment lock according to the lock
-//            description pointed to by the third argument, arg, taken as a
-//            pointer to a struct flock (see above).  F_SETLK is used to
-//            establish shared (or read) locks (F_RDLCK) or exclusive (or
-//            write) locks, (F_WRLCK), as well as remove either type of lock
-//            (F_UNLCK).  If a shared or exclusive lock cannot be set, fcntl
-//            returns immediately with EAGAIN.
-//
-// F_SETLKW   This command is the same as F_SETLK except that if a shared or
-//            exclusive lock is blocked by other locks, the process waits
-//            until the request can be satisfied.  If a signal that is to be
-//            caught is received while fcntl is waiting for a region, the
-//            fcntl will be interrupted if the signal handler has not speci-
-//            fied the SA_RESTART (see sigaction(2)).
-//
-// When a shared lock has been set on a segment of a file, other processes
-// can set shared locks on that segment or a portion of it.  A shared lock
-// prevents any other process from setting an exclusive lock on any portion
-// of the protected area.  A request for a shared lock fails if the file
-// descriptor was not opened with read access.
-//
-// An exclusive lock prevents any other process from setting a shared lock
-// or an exclusive lock on any portion of the protected area.  A request for
-// an exclusive lock fails if the file was not opened with write access.
-//
-// The value of l_whence is SEEK_SET, SEEK_CUR, or SEEK_END to indicate that
-// the relative offset, l_start bytes, will be measured from the start of
-// the file, current position, or end of the file, respectively.  The value
-// of l_len is the number of consecutive bytes to be locked.  If l_len is
-// negative, the result is undefined.  The l_pid field is only used with
-// F_GETLK to return the process ID of the process holding a blocking lock.
-// After a successful F_GETLK request, the value of l_whence is SEEK_SET.
-//
-// Locks may start and extend beyond the current end of a file, but may not
-// start or extend before the beginning of the file.  A lock is set to
-// extend to the largest possible value of the file offset for that file if
-// l_len is set to zero. If l_whence and l_start point to the beginning of
-// the file, and l_len is zero, the entire file is locked.  If an applica-
-// tion wishes only to do entire file locking, the flock(2) system call is
-// much more efficient.
-//
-// There is at most one type of lock set for each byte in the file.  Before
-// a successful return from an F_SETLK or an F_SETLKW request when the call-
-// ing process has previously existing locks on bytes in the region speci-
-// fied by the request, the previous lock type for each byte in the speci-
-// fied region is replaced by the new lock type.  As specified above under
-// the descriptions of shared locks and exclusive locks, an F_SETLK or an
-// F_SETLKW request fails or blocks respectively when another process has
-// existing locks on bytes in the specified region and the type of any of
-// those locks conflicts with the type specified in the request.
-//
-// This interface follows the completely stupid semantics of System V and
-// IEEE Std 1003.1-1988 (``POSIX.1'') that require that all locks associated
-// with a file for a given process are removed when any file descriptor for
-// that file is closed by that process.  This semantic means that applica-
-// tions must be aware of any files that a subroutine library may access.
-// For example if an application for updating the password file locks the
-// password file database while making the update, and then calls
-// getpwname(3) to retrieve a record, the lock will be lost because
-// getpwname(3) opens, reads, and closes the password database.  The data-
-// base close will release all locks that the process has associated with
-// the database, even if the library routine never requested a lock on the
-// database.  Another minor semantic problem with this interface is that
-// locks are not inherited by a child process created using the fork(2)
-// function.  The flock(2) interface has much more rational last close
-// semantics and allows locks to be inherited by child processes.  Flock(2)
-// is recommended for applications that want to ensure the integrity of
-// their locks when using library routines or wish to pass locks to their
-// children.  Note that flock(2) and fcntl(2) locks may be safely used con-
-// currently.
-//
-// All locks associated with a file for a given process are removed when the
-// process terminates.
-//
-// A potential for deadlock occurs if a process controlling a locked region
-// is put to sleep by attempting to lock the locked region of another
-// process.  This implementation detects that sleeping until a locked region
-// is unlocked would cause a deadlock and fails with an EDEADLK error.
-
