@@ -41,6 +41,9 @@ internal typealias CSockLenT = socklen_t
 internal typealias CSockAddr = sockaddr
 internal typealias CSockAddrIn = sockaddr_in
 internal typealias CSockAddrUn = sockaddr_un
+internal typealias CMsgHdr = msghdr
+
+internal typealias CSSizeT = ssize_t
 
 
 // MARK: - Values
@@ -96,6 +99,11 @@ internal var _S_IFREG: CModeT { S_IFREG }
 internal var _S_IFLNK: CModeT { S_IFLNK }
 internal var _S_IFSOCK: CModeT { S_IFSOCK }
 internal var _S_IFWHT: CModeT { S_IFWHT }
+
+internal var _MSG_OOB: CInt { MSG_OOB }
+internal var _MSG_DONTROUTE: CInt { MSG_DONTROUTE }
+internal var _MSG_PEEK: CInt { MSG_PEEK }
+internal var _MSG_WAITALL: CInt { MSG_WAITALL }
 
 internal var _MAXPATHLEN: CInt { MAXPATHLEN }
 
@@ -320,6 +328,14 @@ internal let _stat = stat
 // Sockets
 internal let _socket = socket
 internal let _connect = connect
+internal let _listen = listen
+internal let _bind = bind
+internal let _send = send
+internal let _sendmsg = sendmsg
+internal let _sendto = sendto
+internal let _recv = recv
+internal let _recvmsg = recvmsg
+internal let _recvfrom = recvfrom
 
 
 // C stdlib
