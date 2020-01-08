@@ -1,10 +1,10 @@
-public protocol FileDescriptorProtocol: RawRepresentable where RawValue == CInt {
+public protocol FileDescriptorInterchangable: RawRepresentable where RawValue == CInt {
   var rawValue: CInt { get }
   init(rawValue: CInt)
 }
 
 // Interchange with `FileDescriptor`
-extension FileDescriptorProtocol {
+extension FileDescriptorInterchangable {
   public init(_ fd: FileDescriptor) {
     self.init(rawValue: fd.rawValue)
   }
@@ -17,14 +17,14 @@ extension FileDescriptorProtocol {
   }
 }
 
-extension FileDescriptorProtocol {
+extension FileDescriptorInterchangable {
   // All file descriptors can be closed
   public func close() throws {
     guard _close(self.rawValue) != -1 else { throw errno }
   }
 }
 
-public struct FileDescriptor: FileDescriptorProtocol {
+public struct FileDescriptor: FileDescriptorInterchangable {
   public let rawValue: CInt
   public init(rawValue: CInt) { self.rawValue = rawValue }
   fileprivate init(_ raw: CInt) { self.init(rawValue: raw) }

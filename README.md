@@ -229,7 +229,7 @@ TODO: brief description of the problem
 `FileDescriptor` is a strong wrapper type that serves as the currency type. `Socket`, `KernelQueue`, and
 others are more specific file descriptor types that provide specialized interfaces.
 
-Since Swift doesn't support struct subtyping, we define a `FileDescriptorProtocol` which each
+Since Swift doesn't support struct subtyping, we define a `FileDescriptorInterchangable` which each
 type of file descriptor conforms to. This protocol provides the means to convert to/from the 
 `FileDescriptor` currency type, and defines some universal operations such as `close`
 as well as utility methods.

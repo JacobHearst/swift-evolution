@@ -1,5 +1,5 @@
 
-public struct KernelQueue: FileDescriptorProtocol {
+public struct KernelQueue: FileDescriptorInterchangable {
   public let rawValue: CInt
   public init(rawValue: CInt) { self.rawValue = rawValue }
 }
