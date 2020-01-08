@@ -1,21 +1,8 @@
 
-struct Socket: RawRepresentable {
+struct Socket: FileDescriptorProtocol {
   public let rawValue: CInt
   public init(rawValue: CInt) { self.rawValue = rawValue }
 }
-
-// Sockets are the same as file descriptors. Consider a protocol to unify them, if we're
-// going with a separate type...
-
-extension Socket {
-  public init(_ fd: FileDescriptor) { self.rawValue = fd.rawValue }
-  public var fileDescriptor: FileDescriptor { FileDescriptor(rawValue: self.rawValue) }
-
-  internal init(_checking fd: CInt) throws {
-    try self.init(FileDescriptor(_checking: fd))
-  }
-}
-// TODO: Likewise on FileDescriptor?
 
 extension Socket {
   public struct Domain: RawRepresentable {

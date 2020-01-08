@@ -219,3 +219,22 @@ Need to figure out some kind of watchdog, etc., and some calls such as file clos
 no reason throwing an `Int32` should be expensive or indirect. Alternatively, some calls
 may be marked `@inlinable` to try to allow the compiler to optimize away intermediary overhead.
 
+## Detailed Description
+
+### FileDescriptor
+
+TODO: brief description of the problem
+
+`FileDescriptor` is a strong wrapper type that serves as the currency type. `Socket`, `KernelQueue`, and
+others are more specific file descriptor types that provide specialized interfaces.
+
+Since Swift doesn't support struct subtyping, we define a `FileDescriptorProtocol` which each
+type of file descriptor conforms to. This protocol provides the means to convert to/from the 
+`FileDescriptor` currency type, and defines some universal operations such as `close`
+as well as utility methods.
+
+TODO: Consider having "FileDescriptor" itself be a specialized type, and have a more abstract "Descriptor"
+or resource-like currency type.
+
+
+
