@@ -274,6 +274,8 @@ internal var _EV_CLEAR: CUInt16T { UInt16(bitPattern: Int16(EV_CLEAR)) }
 internal var _EV_EOF: CUInt16T { UInt16(bitPattern: Int16(EV_EOF)) }
 internal var _EV_OOBAND: CUInt16T { UInt16(bitPattern: Int16(EV_OOBAND)) }
 internal var _EV_ERROR: CUInt16T { UInt16(bitPattern: Int16(EV_ERROR)) }
+internal var _EV_POLL: CUInt16T { UInt16(bitPattern: Int16(EV_POLL)) }
+// TODO: dispatch? dispatch2? udata_specific? vanished? flag0/1? poll?
 
 internal var _EVFILT_READ: CInt16T { Int16(EVFILT_READ) }
 internal var _EVFILT_EXCEPT: CInt16T { Int16(EVFILT_EXCEPT) }
@@ -284,7 +286,20 @@ internal var _EVFILT_PROC: CInt16T { Int16(EVFILT_PROC) }
 internal var _EVFILT_SIGNAL: CInt16T { Int16(EVFILT_SIGNAL) }
 internal var _EVFILT_MACHPORT: CInt16T { Int16(EVFILT_MACHPORT) }
 internal var _EVFILT_TIMER: CInt16T { Int16(EVFILT_TIMER) }
+internal var _EVFILT_FS: CInt16T { Int16(EVFILT_FS) }
+internal var _EVFILT_USER: CInt16T { Int16(EVFILT_USER) }
+internal var _EVFILT_VM: CInt16T { Int16(EVFILT_VM) }
+// TODO: syscount? threadmarker?
 
+internal var _NOTE_TRIGGER: CUInt32T { UInt32(bitPattern: NOTE_TRIGGER) }
+internal var _NOTE_FFNOP: CUInt32T { UInt32(bitPattern: NOTE_FFNOP) }
+internal var _NOTE_FFAND: CUInt32T { UInt32(bitPattern: NOTE_FFAND) }
+internal var _NOTE_FFOR: CUInt32T { NOTE_FFOR }
+internal var _NOTE_FFCOPY: CUInt32T { NOTE_FFCOPY }
+internal var _NOTE_FFCTRLMASK: CUInt32T { NOTE_FFCTRLMASK }
+internal var _NOTE_FFLAGSMASK: CUInt32T { UInt32(bitPattern: NOTE_FFLAGSMASK) }
+internal var _NOTE_LOWAT: CUInt32T { UInt32(bitPattern: NOTE_LOWAT) }
+internal var _NOTE_OOB: CUInt32T { UInt32(bitPattern: NOTE_OOB) }
 internal var _NOTE_DELETE: CUInt32T { UInt32(bitPattern: NOTE_DELETE) }
 internal var _NOTE_WRITE: CUInt32T { UInt32(bitPattern: NOTE_WRITE) }
 internal var _NOTE_EXTEND: CUInt32T { UInt32(bitPattern: NOTE_EXTEND) }
@@ -292,20 +307,35 @@ internal var _NOTE_ATTRIB: CUInt32T { UInt32(bitPattern: NOTE_ATTRIB) }
 internal var _NOTE_LINK: CUInt32T { UInt32(bitPattern: NOTE_LINK) }
 internal var _NOTE_RENAME: CUInt32T { UInt32(bitPattern: NOTE_RENAME) }
 internal var _NOTE_REVOKE: CUInt32T { UInt32(bitPattern: NOTE_REVOKE) }
+internal var _NOTE_NONE: CUInt32T { UInt32(bitPattern: NOTE_NONE) }
 internal var _NOTE_FUNLOCK: CUInt32T { UInt32(bitPattern: NOTE_FUNLOCK) }
 internal var _NOTE_EXIT: CUInt32T { NOTE_EXIT }
-internal var _NOTE_EXITSTATUS: CUInt32T { UInt32(bitPattern: NOTE_EXITSTATUS) }
 internal var _NOTE_FORK: CUInt32T { UInt32(bitPattern: NOTE_FORK) }
 internal var _NOTE_EXEC: CUInt32T { UInt32(bitPattern: NOTE_EXEC) }
 internal var _NOTE_SIGNAL: CUInt32T { UInt32(bitPattern: NOTE_SIGNAL) }
+internal var _NOTE_EXITSTATUS: CUInt32T { UInt32(bitPattern: NOTE_EXITSTATUS) }
+internal var _NOTE_EXIT_DETAIL: CUInt32T { UInt32(bitPattern: NOTE_EXIT_DETAIL) }
+internal var _NOTE_PDATAMASK: CUInt32T { UInt32(bitPattern: NOTE_PDATAMASK) }
+internal var _NOTE_EXIT_DETAIL_MASK: CUInt32T { UInt32(bitPattern: NOTE_EXIT_DETAIL_MASK) }
+internal var _NOTE_EXIT_DECRYPTFAIL: CUInt32T { UInt32(bitPattern: NOTE_EXIT_DECRYPTFAIL) }
+internal var _NOTE_EXIT_MEMORY: CUInt32T { UInt32(bitPattern: NOTE_EXIT_MEMORY) }
+internal var _NOTE_EXIT_CSERROR: CUInt32T { UInt32(bitPattern: NOTE_EXIT_CSERROR) }
+internal var _NOTE_VM_PRESSURE: CUInt32T { NOTE_VM_PRESSURE }
+internal var _NOTE_VM_PRESSURE_TERMINATE: CUInt32T { UInt32(bitPattern: NOTE_VM_PRESSURE_TERMINATE) }
+internal var _NOTE_VM_PRESSURE_SUDDEN_TERMINATE: CUInt32T { UInt32(bitPattern: NOTE_VM_PRESSURE_SUDDEN_TERMINATE) }
+internal var _NOTE_VM_ERROR: CUInt32T { UInt32(bitPattern: NOTE_VM_ERROR) }
 internal var _NOTE_SECONDS: CUInt32T { UInt32(bitPattern: NOTE_SECONDS) }
 internal var _NOTE_USECONDS: CUInt32T { UInt32(bitPattern: NOTE_USECONDS) }
 internal var _NOTE_NSECONDS: CUInt32T { UInt32(bitPattern: NOTE_NSECONDS) }
-internal var _NOTE_MACHTIME: CUInt32T { UInt32(bitPattern: NOTE_MACHTIME) }
 internal var _NOTE_ABSOLUTE: CUInt32T { UInt32(bitPattern: NOTE_ABSOLUTE) }
+internal var _NOTE_LEEWAY: CUInt32T { UInt32(bitPattern: NOTE_LEEWAY) }
 internal var _NOTE_CRITICAL: CUInt32T { UInt32(bitPattern: NOTE_CRITICAL) }
 internal var _NOTE_BACKGROUND: CUInt32T { UInt32(bitPattern: NOTE_BACKGROUND) }
-internal var _NOTE_LEEWAY: CUInt32T { UInt32(bitPattern: NOTE_LEEWAY) }
+internal var _NOTE_MACH_CONTINUOUS_TIME: CUInt32T { UInt32(bitPattern: NOTE_MACH_CONTINUOUS_TIME) }
+internal var _NOTE_MACHTIME: CUInt32T { UInt32(bitPattern: NOTE_MACHTIME) }
+internal var _NOTE_TRACK: CUInt32T { UInt32(bitPattern: NOTE_TRACK) }
+internal var _NOTE_TRACKERR: CUInt32T { UInt32(bitPattern: NOTE_TRACKERR) }
+internal var _NOTE_CHILD: CUInt32T { UInt32(bitPattern: NOTE_CHILD) }
 
 #else
 #error("FIXME: Linux epoll support")
