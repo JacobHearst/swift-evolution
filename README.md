@@ -39,6 +39,7 @@ and relevant currency types.
   * `fcntl` sub-commands (`getOwner`, `preallocate`, `setStatusFlags`, ... )
   * `struct FilePermissions: OptionSet`, ...
 * Sockets  
+* `kqueue`
 * ...  
 
 

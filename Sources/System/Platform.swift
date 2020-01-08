@@ -9,6 +9,8 @@ import Darwin
 public typealias CChar = Int8
 public typealias CInt = Int32
 public typealias CUInt32T = UInt32
+public typealias CUInt16T = UInt16
+public typealias CInt16T = Int16
 public typealias CUInt = u_int
 
 public typealias CModeT = mode_t
@@ -44,6 +46,15 @@ internal typealias CSockAddrUn = sockaddr_un
 internal typealias CMsgHdr = msghdr
 
 internal typealias CSSizeT = ssize_t
+
+// Polling
+
+#if os(macOS) || os(iOS) || os(watchOS) || os(tvOS)
+public typealias CKEvent = kevent
+#else
+#error("FIXME: Linux epoll support")
+#endif
+// TODO: Should we even do select/poll?
 
 
 // MARK: - Values
@@ -251,6 +262,57 @@ internal var _SOCK_DGRAM: CInt { SOCK_DGRAM }
 internal var _SOCK_RAW: CInt { SOCK_RAW }
 
 
+// Polling
+#if os(macOS) || os(iOS) || os(watchOS) || os(tvOS)
+internal var _EV_ADD: CUInt16T { UInt16(bitPattern: Int16(EV_ADD)) }
+internal var _EV_ENABLE: CUInt16T { UInt16(bitPattern: Int16(EV_ENABLE)) }
+internal var _EV_DISABLE: CUInt16T { UInt16(bitPattern: Int16(EV_DISABLE)) }
+internal var _EV_DELETE: CUInt16T { UInt16(bitPattern: Int16(EV_DELETE)) }
+internal var _EV_RECEIPT: CUInt16T { UInt16(bitPattern: Int16(EV_RECEIPT)) }
+internal var _EV_ONESHOT: CUInt16T { UInt16(bitPattern: Int16(EV_ONESHOT)) }
+internal var _EV_CLEAR: CUInt16T { UInt16(bitPattern: Int16(EV_CLEAR)) }
+internal var _EV_EOF: CUInt16T { UInt16(bitPattern: Int16(EV_EOF)) }
+internal var _EV_OOBAND: CUInt16T { UInt16(bitPattern: Int16(EV_OOBAND)) }
+internal var _EV_ERROR: CUInt16T { UInt16(bitPattern: Int16(EV_ERROR)) }
+
+internal var _EVFILT_READ: CInt16T { Int16(EVFILT_READ) }
+internal var _EVFILT_EXCEPT: CInt16T { Int16(EVFILT_EXCEPT) }
+internal var _EVFILT_WRITE: CInt16T { Int16(EVFILT_WRITE) }
+internal var _EVFILT_AIO: CInt16T { Int16(EVFILT_AIO) }
+internal var _EVFILT_VNODE: CInt16T { Int16(EVFILT_VNODE) }
+internal var _EVFILT_PROC: CInt16T { Int16(EVFILT_PROC) }
+internal var _EVFILT_SIGNAL: CInt16T { Int16(EVFILT_SIGNAL) }
+internal var _EVFILT_MACHPORT: CInt16T { Int16(EVFILT_MACHPORT) }
+internal var _EVFILT_TIMER: CInt16T { Int16(EVFILT_TIMER) }
+
+internal var _NOTE_DELETE: CUInt32T { UInt32(bitPattern: NOTE_DELETE) }
+internal var _NOTE_WRITE: CUInt32T { UInt32(bitPattern: NOTE_WRITE) }
+internal var _NOTE_EXTEND: CUInt32T { UInt32(bitPattern: NOTE_EXTEND) }
+internal var _NOTE_ATTRIB: CUInt32T { UInt32(bitPattern: NOTE_ATTRIB) }
+internal var _NOTE_LINK: CUInt32T { UInt32(bitPattern: NOTE_LINK) }
+internal var _NOTE_RENAME: CUInt32T { UInt32(bitPattern: NOTE_RENAME) }
+internal var _NOTE_REVOKE: CUInt32T { UInt32(bitPattern: NOTE_REVOKE) }
+internal var _NOTE_FUNLOCK: CUInt32T { UInt32(bitPattern: NOTE_FUNLOCK) }
+internal var _NOTE_EXIT: CUInt32T { NOTE_EXIT }
+internal var _NOTE_EXITSTATUS: CUInt32T { UInt32(bitPattern: NOTE_EXITSTATUS) }
+internal var _NOTE_FORK: CUInt32T { UInt32(bitPattern: NOTE_FORK) }
+internal var _NOTE_EXEC: CUInt32T { UInt32(bitPattern: NOTE_EXEC) }
+internal var _NOTE_SIGNAL: CUInt32T { UInt32(bitPattern: NOTE_SIGNAL) }
+internal var _NOTE_SECONDS: CUInt32T { UInt32(bitPattern: NOTE_SECONDS) }
+internal var _NOTE_USECONDS: CUInt32T { UInt32(bitPattern: NOTE_USECONDS) }
+internal var _NOTE_NSECONDS: CUInt32T { UInt32(bitPattern: NOTE_NSECONDS) }
+internal var _NOTE_MACHTIME: CUInt32T { UInt32(bitPattern: NOTE_MACHTIME) }
+internal var _NOTE_ABSOLUTE: CUInt32T { UInt32(bitPattern: NOTE_ABSOLUTE) }
+internal var _NOTE_CRITICAL: CUInt32T { UInt32(bitPattern: NOTE_CRITICAL) }
+internal var _NOTE_BACKGROUND: CUInt32T { UInt32(bitPattern: NOTE_BACKGROUND) }
+internal var _NOTE_LEEWAY: CUInt32T { UInt32(bitPattern: NOTE_LEEWAY) }
+
+#else
+#error("FIXME: Linux epoll support")
+#endif
+// TODO: Should we even do select/poll?
+
+
 // ACL permissions
 internal var _ACL_READ_DATA: CACLPermT { ACL_READ_DATA.rawValue }
 internal var _ACL_LIST_DIRECTORY: CACLPermT { ACL_LIST_DIRECTORY.rawValue }
@@ -346,3 +408,12 @@ internal let _acl_init = acl_init
 internal let _acl_dup = acl_dup
 internal let _acl_free = acl_free
 
+
+// Polling
+
+#if os(macOS) || os(iOS) || os(watchOS) || os(tvOS)
+internal let _kqueue = kqueue
+#else
+#error("FIXME: Linux epoll support")
+#endif
+// TODO: Should we even do select/poll?
