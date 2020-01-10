@@ -1,23 +1,35 @@
 // TODO: Consider making enums or else splitting out richer types
 extension KernelQueue.Event {
+
+  // TODO: Better opaque type
+  public typealias Identifier = UInt
+
+  // TODO: Better type
+  public typealias FilterData = Int
+
+  // TODO: Better type
+  public typealias UserData = OpaquePointer?
+
   // ident: Value used to identify the source of the event.  The exact
   // interpretation is determined by the attached filter, but often is a file
   // descriptor.
-  public var identifier: UInt /* TODO: better opaque type... */ {
-    rawValue.ident
+  public var identifier: Identifier {
+    get { rawValue.ident }
+    set { rawValue.ident = newValue }
   }
 
   // data: Filter-specific data value.
-  public var data: Int /* TODO: better type */ {
-    rawValue.data
+  public var data: FilterData {
+    get { rawValue.data }
+    set { rawValue.data = newValue }
   }
 
   // udata: Opaque user-defined value passed through the kernel unchanged. It
   // can optionally be part of the uniquing decision of the kevent system
-  public var userData: OpaquePointer? /* TODO: better type */ {
-    OpaquePointer(rawValue.udata)
+  public var userData: UserData {
+    get { OpaquePointer(rawValue.udata) }
+    set { rawValue.udata = UnsafeMutableRawPointer(newValue) }
   }
-
 }
 
 extension KernelQueue.Event {
@@ -79,7 +91,10 @@ extension KernelQueue.Event {
 
   // filter: Identifies the kernel filter used to process this event.  The
   // pre-defined system filters are described below.
-  public var filter: Filter { Filter(rawValue: rawValue.filter) }
+  public var filter: Filter {
+    get { Filter(rawValue: rawValue.filter) }
+    set { rawValue.filter = newValue.rawValue }
+  }
 }
 
 

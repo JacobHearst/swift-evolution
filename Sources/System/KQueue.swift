@@ -12,7 +12,7 @@ extension KernelQueue {
 
 extension KernelQueue {
   public struct Event: RawRepresentable {
-    public let rawValue: CKEvent
+    public var rawValue: CKEvent
 
     public init(rawValue: CKEvent) { self.rawValue = rawValue }
   }
