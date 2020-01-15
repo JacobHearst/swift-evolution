@@ -1,11 +1,11 @@
 // NOTE: not syscalls, but cstdio. Useful to put everything together?
 
-public struct Stream {
+/*public*/internal struct Stream {
   var rawValue: UnsafeMutablePointer<CFILE>
 }
 
 extension Stream {
-  public enum AccessMode: String {
+  /*public*/internal enum AccessMode: String {
     case read = "r"
     case write = "w"
     case append = "a"
@@ -15,12 +15,12 @@ extension Stream {
   }
 
   // TODO: Consider putting on Path
-  public init(open path: Path, _ mode: Stream.AccessMode) throws {
+  /*public*/internal init(open path: FilePath, _ mode: Stream.AccessMode) throws {
     guard let obj = _fopen(path.bytes, mode.rawValue) else { throw errno }
     self.rawValue = obj
   }
 
-  public func close() throws {
+  /*public*/internal func close() throws {
     guard _fclose(self.rawValue) == 0 else { throw errno }
   }
 
@@ -31,25 +31,25 @@ extension Stream {
 //  }
   // TODO: template-string like temporary file names, which is also awful
 
-  public func write(_ buf: UnsafeRawBufferPointer) throws {
+  /*public*/internal func write(_ buf: UnsafeRawBufferPointer) throws {
     // WTF, is this guaranteed to actually set errno?
     guard buf.count >= _fwrite(buf.baseAddress, 1, buf.count, self.rawValue) else {
       throw errno
     }
   }
 
-  public func read(into buf: UnsafeMutableRawBufferPointer) throws {
+  /*public*/internal func read(into buf: UnsafeMutableRawBufferPointer) throws {
     guard buf.count >= _fread(buf.baseAddress, 1, buf.count, self.rawValue) else {
       throw errno
     }
   }
 
-  public func setBuffer(to buffer: UnsafeMutableRawBufferPointer) {
+  /*public*/internal func setBuffer(to buffer: UnsafeMutableRawBufferPointer) {
     let b = buffer.bindMemory(to: Int8.self)
     _setbuffer(self.rawValue, b.baseAddress, Int32(b.count))
   }
 
-  public func flush() throws {
+  /*public*/internal func flush() throws {
     guard _fflush(self.rawValue) != _eof else { throw errno }
   }
 }

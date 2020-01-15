@@ -1,6 +1,6 @@
 
 extension KernelQueue.Event {
-  public init(
+  /*public*/internal init(
     identifier: Identifier = Identifier(),
     filter: Filter,
     filterFlags: AllFilterSpecificFlags = AllFilterSpecificFlags(),
@@ -17,12 +17,12 @@ extension KernelQueue.Event {
       udata: UnsafeMutablePointer(userData)))
   }
 
-  public static func read() -> KernelQueue.Event {
+  /*public*/internal static func read() -> KernelQueue.Event {
     fatalError("TODO: arugmetns and implement")
   }
   // TODO: write, aio, vnode, proc, signal, timer, machPort, fileSystem
 
-  public static func user(
+  /*public*/internal static func user(
     identifier: Identifier = Identifier(),
     filterFlags: UserFilterFlags, // TODO: Defaulted? "userFlags"?
     filterData: FilterData = FilterData(), // TODO: "userData?" contrast with below?

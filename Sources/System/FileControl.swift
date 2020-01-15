@@ -1,12 +1,12 @@
 extension FileDescriptor {
   // Namespace for enumerated `fcntl` APIs
-  public struct Control {
+  /*public*/internal struct Control {
     internal let fd: FileDescriptor
     internal init(_ fd: FileDescriptor) { self.fd = fd }
     fileprivate var rawValue: CInt { fd.rawValue }
   }
   // Access `fcntl` APIs
-  public var control: Control { Control(self) }
+  /*public*/internal var control: Control { Control(self) }
 }
 
 extension FileDescriptor.Control {
@@ -31,13 +31,13 @@ extension FileDescriptor.Control {
 
 // Provide escape hatches for unenumerated `fcntl` commands
 extension FileDescriptor {
-  public func fcntl(command: CInt) throws -> CInt {
+  /*public*/internal func fcntl(command: CInt) throws -> CInt {
     try control.cntl(command)
   }
-  public func fcntl(command: CInt, _ arg: CInt) throws -> CInt {
+  /*public*/internal func fcntl(command: CInt, _ arg: CInt) throws -> CInt {
     try control.cntl(command, arg)
   }
-  public func fcntl(
+  /*public*/internal func fcntl(
     command: CInt, _ ptr: UnsafeMutableRawPointer
   ) throws -> CInt {
     try control.cntl(command, ptr)
@@ -64,64 +64,64 @@ extension FileDescriptor.Control {
   //
   // F_DUPFD_CLOEXEC    Like F_DUPFD, except that the close-on-exec flag asso-
   //                    ciated with the new file descriptor is set.
-  public func duplicate(setCloseOnExec: Bool = false) throws -> FileDescriptor {
+  /*public*/internal func duplicate(setCloseOnExec: Bool = false) throws -> FileDescriptor {
     return FileDescriptor(
       rawValue: try cntl(setCloseOnExec ? _F_DUPFD_CLOEXEC : _F_DUPFD))
   }
 
-  public struct Flags: OptionSet {
-    public let rawValue: CInt
-    public init(rawValue: CInt) { self.rawValue = rawValue }
+  /*public*/internal struct Flags: OptionSet {
+    /*public*/internal let rawValue: CInt
+    /*public*/internal init(rawValue: CInt) { self.rawValue = rawValue }
     fileprivate init(_ raw: CInt) { self.init(rawValue: raw) }
 
-    public static var closeOnExec: Flags { Flags(1) }
+    /*public*/internal static var closeOnExec: Flags { Flags(1) }
   }
 
   // F_GETFD            Get the flags associated with the file descriptor
   //                    fildes, as described below (arg is ignored).
-  public func getFlags() throws -> Flags {
+  /*public*/internal func getFlags() throws -> Flags {
     return try Flags(cntl(_F_GETFD))
   }
 
   // F_SETFD            Set the file descriptor flags to arg.
-  public func setFlags(_ value: Flags) throws {
+  /*public*/internal func setFlags(_ value: Flags) throws {
     _ = try cntl(_F_SETFD, value.rawValue)
   }
 
-  public struct StatusFlags: OptionSet {
-    public let rawValue: CInt
-    public init(rawValue: CInt) { self.rawValue = rawValue }
+  /*public*/internal struct StatusFlags: OptionSet {
+    /*public*/internal let rawValue: CInt
+    /*public*/internal init(rawValue: CInt) { self.rawValue = rawValue }
     fileprivate init(_ raw: CInt) { self.init(rawValue: raw) }
 
     // O_NONBLOCK   Non-blocking I/O; if no data is available to a read
     //              call, or if a write operation would block, the read or
     //              write call returns -1 with the error EAGAIN.
-    public static var nonblocking: StatusFlags { StatusFlags(0x4) }
+    /*public*/internal static var nonblocking: StatusFlags { StatusFlags(0x4) }
 
     // O_APPEND     Force each write to append at the end of file; corre-
     //              sponds to the O_APPEND flag of open(2).
-    public static var append: StatusFlags { StatusFlags(0x8) }
+    /*public*/internal static var append: StatusFlags { StatusFlags(0x8) }
 
     // O_ASYNC      Enable the SIGIO signal to be sent to the process
     //              group when I/O is possible, e.g., upon availability of
     //              data to be read.
-    public static var async: StatusFlags { StatusFlags(0x40) }
+    /*public*/internal static var async: StatusFlags { StatusFlags(0x40) }
   }
 
   // F_GETFL            Get descriptor status flags, as described below (arg
   //                    is ignored).
-  public func getStatusFlags() throws -> StatusFlags {
+  /*public*/internal func getStatusFlags() throws -> StatusFlags {
     StatusFlags(try cntl(_F_GETFL))
   }
 
   // F_SETFL            Set descriptor status flags to arg.
-  public func setStatusFlags(_ flags: StatusFlags) throws {
+  /*public*/internal func setStatusFlags(_ flags: StatusFlags) throws {
     _ = try cntl(_F_SETFL, flags.rawValue)
   }
 
-  public struct PIDOrPGID: RawRepresentable {
-    public let rawValue: CInt
-    public init(rawValue: CInt) { self.rawValue = rawValue }
+  /*public*/internal struct PIDOrPGID: RawRepresentable {
+    /*public*/internal let rawValue: CInt
+    /*public*/internal init(rawValue: CInt) { self.rawValue = rawValue }
     fileprivate init(_ raw: CInt) { self.init(rawValue: raw) }
 
     // FIXME: inits, when we have actual PID or PGID type
@@ -133,7 +133,7 @@ extension FileDescriptor.Control {
   // F_GETOWN           Get the process ID or process group currently receiv-
   //                    ing SIGIO and SIGURG signals; process groups are
   //                    returned as negative values (arg is ignored).
-  public func getOwner() throws -> PIDOrPGID {
+  /*public*/internal func getOwner() throws -> PIDOrPGID {
     try PIDOrPGID(cntl(_F_GETOWN))
   }
 
@@ -141,7 +141,7 @@ extension FileDescriptor.Control {
   //                    SIGURG signals; process groups are specified by sup-
   //                    plying arg as negative, otherwise arg is interpreted
   //                    as a process ID.
-  public func setOwner(_ id: PIDOrPGID) throws {
+  /*public*/internal func setOwner(_ id: PIDOrPGID) throws {
     _ = try cntl(_F_SETOWN, id.rawValue)
   }
 
@@ -151,23 +151,23 @@ extension FileDescriptor.Control {
   //                    Get the non firmlinked path of the file descriptor
   //                    Fildes.  The argument must be a buffer of size
   //                    MAXPATHLEN or greater.
-  public func getPath(noFirmLink: Bool = false) throws -> Path {
-    return try Path {
+  /*public*/internal func getPath(noFirmLink: Bool = false) throws -> FilePath {
+    return try FilePath {
       _ = try cntl(noFirmLink ? _F_GETPATH_NOFIRMLINK : _F_GETPATH, $0)
       return 1 + _strlen($0.assumingMemoryBound(to: Int8.self))
     }
   }
 
-  public struct PreallocateFlags: OptionSet {
-    public let rawValue: CUInt32T
-    public init(rawValue: CUInt32T) { self.rawValue = rawValue }
+  /*public*/internal struct PreallocateFlags: OptionSet {
+    /*public*/internal let rawValue: CUInt32T
+    /*public*/internal init(rawValue: CUInt32T) { self.rawValue = rawValue }
     fileprivate init(_ raw: CUInt32T) { self.init(rawValue: raw) }
 
     //       F_ALLOCATECONTIG   Allocate contiguous space.
-    public static var allocateContiguous: PreallocateFlags { PreallocateFlags(2) }
+    /*public*/internal static var allocateContiguous: PreallocateFlags { PreallocateFlags(2) }
 
     //       F_ALLOCATEALL      Allocate all requested space or no space at all.
-    public static var allocateAll: PreallocateFlags { PreallocateFlags(4) }
+    /*public*/internal static var allocateAll: PreallocateFlags { PreallocateFlags(4) }
   }
 
   // F_PREALLOCATE      Preallocate file storage space. Note: upon success,
@@ -175,7 +175,7 @@ extension FileDescriptor.Control {
   //                    larger than the size requested, or (if the
   //                    F_ALLOCATEALL flag is not provided) smaller than the
   //                    space requested.
-  public func preallocate(
+  /*public*/internal func preallocate(
     _ flags: PreallocateFlags, bytesFromEnd: Int64
   ) throws -> Int64 {
     // The F_PREALLOCATE command operates on the following structure:
@@ -204,7 +204,7 @@ extension FileDescriptor.Control {
     return Int64(arg.fst_bytesalloc)
   }
 
-  public func preallocate(
+  /*public*/internal func preallocate(
     _ flags: PreallocateFlags, regionStart: Int64, length: Int64
   ) throws -> Int64 {
     // The F_PREALLOCATE command operates on the following structure:
@@ -238,7 +238,7 @@ extension FileDescriptor.Control {
   //                    Holes must be aligned to file system block boundaries.
   //                    This will fail on file systems that do not support
   //                    this interface.
-  public func punchHole(startingAt offset: Int64, length: Int64) throws {
+  /*public*/internal func punchHole(startingAt offset: Int64, length: Int64) throws {
     // The F_PUNCHHOLE command operates on the following structure:
     //
     //         typedef struct fpunchhole {
@@ -254,14 +254,14 @@ extension FileDescriptor.Control {
 
   // F_SETSIZE          Truncate a file without zeroing space.  The calling
   //                    process must have root privileges.
-  public func setSize(to: Int64) throws {
+  /*public*/internal func setSize(to: Int64) throws {
     // Reading online code snippets show that size is passed indirectly...
     var size = COffT(to)
     _ = try cntl(_F_SETSIZE, &size)
   }
 
   // F_RDADVISE         Issue an advisory read async with no copy to user.
-  public func advisoryRead(offset: Int64, length: Int) throws {
+  /*public*/internal func advisoryRead(offset: Int64, length: Int) throws {
     // The F_RDADVISE command operates on the following structure which holds
     // information passed from the user to the system:
     //
@@ -276,14 +276,14 @@ extension FileDescriptor.Control {
   // F_RDAHEAD          Turn read ahead off/on.  A zero value in arg disables
   //                    read ahead.  A non-zero value in arg turns read ahead
   //                    on.
-  public func enableReadAhead(_ value: Bool) throws {
+  /*public*/internal func enableReadAhead(_ value: Bool) throws {
     _ = try cntl(_F_RDAHEAD, value ? 1 : 0)
   }
 
   // F_NOCACHE          Turns data caching off/on. A non-zero value in arg
   //                    turns data caching off.  A value of zero in arg turns
   //                    data caching on.
-  public func disableDataCaching(_ value: Bool) throws {
+  /*public*/internal func disableDataCaching(_ value: Bool) throws {
     _ = try cntl(_F_NOCACHE, value ? 1 : 0)
   }
 
@@ -294,7 +294,7 @@ extension FileDescriptor.Control {
   //                    not backed by physical blocks. This is subject to
   //                    change.
   //
-  public func getDeviceOffset() throws -> Int64 {
+  /*public*/internal func getDeviceOffset() throws -> Int64 {
     // The F_LOG2PHYS command operates on the following structure:
     //
     //         struct log2phys {
@@ -309,7 +309,7 @@ extension FileDescriptor.Control {
 
   // F_LOG2PHYS_EXT     Variant of F_LOG2PHYS that uses the passed in file
   //                    offset and length.
-  public func getDeviceOffset(
+  /*public*/internal func getDeviceOffset(
     numContiguousBytesToQuery: Int64, offset: Int64
   ) throws -> (numContiguousBytesAllocated: Int64, deviceOffset: Int64) {
     // The F_LOG2PHYS_EXT command operates on the same structure as F_LOG2PHYS
@@ -352,7 +352,7 @@ extension FileDescriptor.Control {
   //                    rently implemented on HFS and APFS. It requires hard-
   //                    ware support, which Apple SSDs are guaranteed to pro-
   //                    vide.
-  public func syncBarrier() throws {
+  /*public*/internal func syncBarrier() throws {
     _ = try cntl(_F_BARRIERFSYNC)
   }
 
@@ -367,7 +367,7 @@ extension FileDescriptor.Control {
   //                    tion may take quite a while to complete.  Certain
   //                    FireWire drives have also been known to ignore the
   //                    request to flush their buffered data.
-  public func fullSync() throws {
+  /*public*/internal func fullSync() throws {
     _ = try cntl(_F_FULLFSYNC)
   }
 
@@ -376,7 +376,7 @@ extension FileDescriptor.Control {
   //                    is no reader.  If arg is non-zero, SIGPIPE generation
   //                    is disabled for descriptor fildes, while an arg of
   //                    zero enables it (the default).
-  public func disableSIGPIPE(_ value: Bool = true) throws {
+  /*public*/internal func disableSIGPIPE(_ value: Bool = true) throws {
     _ = try cntl(_F_SETNOSIGPIPE, value ? 1 : 0)
   }
 
@@ -384,7 +384,7 @@ extension FileDescriptor.Control {
   //                    when a write fails on a pipe or socket for which there
   //                    is no reader.  The semantics of the return value match
   //                    those of the arg of F_SETNOSIGPIPE.
-  public func hasDisabledSIGPIPE() throws -> Bool {
+  /*public*/internal func hasDisabledSIGPIPE() throws -> Bool {
     return try cntl(_F_GETNOSIGPIPE) != 0
   }
 

@@ -1,20 +1,20 @@
 
-public struct KernelQueue: FileDescriptorInterchangable {
-  public let rawValue: CInt
-  public init(rawValue: CInt) { self.rawValue = rawValue }
+/*public*/internal struct KernelQueue: FileDescriptorInterchangable {
+  /*public*/internal let rawValue: CInt
+  /*public*/internal init(rawValue: CInt) { self.rawValue = rawValue }
 }
 
 extension KernelQueue {
-  public static func open() throws -> KernelQueue {
+  /*public*/internal static func open() throws -> KernelQueue {
     try KernelQueue(_checking: _kqueue())
   }
 }
 
 extension KernelQueue {
-  public struct Event: RawRepresentable {
-    public var rawValue: CKEvent
+  /*public*/internal struct Event: RawRepresentable {
+    /*public*/internal var rawValue: CKEvent
 
-    public init(rawValue: CKEvent) { self.rawValue = rawValue }
+    /*public*/internal init(rawValue: CKEvent) { self.rawValue = rawValue }
   }
 }
 
