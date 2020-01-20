@@ -100,6 +100,9 @@ extension FilePath: CustomStringConvertible {
 extension FilePath {
   /// TODO: Docs
   public static var maxLength: Int { Int(_MAXPATHLEN) }
+
+  @available(*, unavailable, renamed: "maxLength")
+  public static var MAXPATHLEN: Int { maxLength}
 }
 
 extension FilePath {
