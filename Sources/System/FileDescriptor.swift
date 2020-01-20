@@ -12,7 +12,7 @@ extension FileDescriptorInterchangable {
   /*public*/internal var fileDescriptor: FileDescriptor { FileDescriptor(rawValue: self.rawValue) }
 
   internal init(_checking fd: CInt) throws {
-    guard fd != -1 else { throw errno }
+    guard fd != -1 else { throw Errno.current }
     self.init(rawValue: fd)
   }
 }
@@ -20,7 +20,7 @@ extension FileDescriptorInterchangable {
 extension FileDescriptorInterchangable {
   // All file descriptors can be closed
   /*public*/internal func close() throws {
-    guard _close(self.rawValue) != -1 else { throw errno }
+    guard _close(self.rawValue) != -1 else { throw Errno.current }
   }
 }
 
@@ -234,7 +234,7 @@ extension FileDescriptor {
 
   /// TODO: Docs
   public func close() throws {
-    guard _close(self.rawValue) != -1 else { throw errno }
+    guard _close(self.rawValue) != -1 else { throw Errno.current }
   }
 
   /// TODO: Docs
@@ -242,14 +242,14 @@ extension FileDescriptor {
     offset: Int64, from whence: FileDescriptor.SeekOrigin
   ) throws -> Int64 {
     let newOffset = _lseek(self.rawValue, COffT(offset), whence.rawValue)
-    guard newOffset != -1 else { throw errno }
+    guard newOffset != -1 else { throw Errno.current }
     return Int64(newOffset)
   }
 
   /// TODO: Docs, uses cursor position
   public func read(into: UnsafeMutableRawBufferPointer) throws -> Int {
     let numBytes = _read(self.rawValue, into.baseAddress, into.count)
-    guard numBytes >= 0 else { throw errno }
+    guard numBytes >= 0 else { throw Errno.current }
     return numBytes
   }
 
@@ -258,7 +258,7 @@ extension FileDescriptor {
     fromAbsoluteOffset offset: Int64, into: UnsafeMutableRawBufferPointer
   ) throws -> Int {
     let numBytes = _pread(self.rawValue, into.baseAddress, into.count, offset)
-    guard numBytes >= 0 else { throw errno }
+    guard numBytes >= 0 else { throw Errno.current }
     return numBytes
   }
 

@@ -16,17 +16,17 @@ extension Stream {
 
   // TODO: Consider putting on Path
   /*public*/internal init(open path: FilePath, _ mode: Stream.AccessMode) throws {
-    guard let obj = _fopen(path.bytes, mode.rawValue) else { throw errno }
+    guard let obj = _fopen(path.bytes, mode.rawValue) else { throw Errno.current }
     self.rawValue = obj
   }
 
   /*public*/internal func close() throws {
-    guard _fclose(self.rawValue) == 0 else { throw errno }
+    guard _fclose(self.rawValue) == 0 else { throw Errno.current }
   }
 
   // TODO: temporary file solutions, or just wrappers?
 //  public static func temporaryFile() throws -> Stream {
-//    guard let object = _tmpfile() else { throw errno }
+//    guard let object = _tmpfile() else { throw Errno.current }
 //    return Stream(rawValue: object)
 //  }
   // TODO: template-string like temporary file names, which is also awful
@@ -34,13 +34,13 @@ extension Stream {
   /*public*/internal func write(_ buf: UnsafeRawBufferPointer) throws {
     // WTF, is this guaranteed to actually set errno?
     guard buf.count >= _fwrite(buf.baseAddress, 1, buf.count, self.rawValue) else {
-      throw errno
+      throw Errno.current
     }
   }
 
   /*public*/internal func read(into buf: UnsafeMutableRawBufferPointer) throws {
     guard buf.count >= _fread(buf.baseAddress, 1, buf.count, self.rawValue) else {
-      throw errno
+      throw Errno.current
     }
   }
 
@@ -50,7 +50,7 @@ extension Stream {
   }
 
   /*public*/internal func flush() throws {
-    guard _fflush(self.rawValue) != _eof else { throw errno }
+    guard _fflush(self.rawValue) != _eof else { throw Errno.current }
   }
 }
 

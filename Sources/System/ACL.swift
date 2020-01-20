@@ -163,19 +163,19 @@
 extension ACLHandle {
   /// TODO: Consider dropping from API for now
   /*public*/internal static func create(count: Int) throws -> ACLHandle {
-    guard let ptr = _acl_init(CInt(count)) else { throw errno }
+    guard let ptr = _acl_init(CInt(count)) else { throw Errno.current }
     return ACLHandle(ptr)
   }
 
   /// TODO: Consider dropping from API for now
   /*public*/internal func duplicate() throws -> ACLHandle {
-    guard let ptr = _acl_dup(self.rawValue) else { throw errno }
+    guard let ptr = _acl_dup(self.rawValue) else { throw Errno.current }
     return ACLHandle(ptr)
   }
 
   /// TODO: Consider dropping from API for now
   /*public*/internal func free() throws {
-    guard _acl_free(UnsafeMutableRawPointer(self.rawValue)) == 0 else { throw errno }
+    guard _acl_free(UnsafeMutableRawPointer(self.rawValue)) == 0 else { throw Errno.current }
   }
 
   // ...

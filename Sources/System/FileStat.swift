@@ -125,7 +125,7 @@ extension FileStat {
 extension FileDescriptor {
   /*public*/internal func stat() throws -> FileStat {
     var result = FileStat.RawValue()
-    guard _fstat(self.rawValue, &result) == 0 else { throw errno }
+    guard _fstat(self.rawValue, &result) == 0 else { throw Errno.current }
     return FileStat(rawValue: result)
   }
 }
@@ -134,7 +134,7 @@ extension FilePath {
   /*public*/internal func stat(followSymlinks: Bool = true) throws -> FileStat {
     var result = FileStat.RawValue()
     let stat = followSymlinks ? _stat : _lstat
-    guard stat(self.bytes, &result) == 0 else { throw errno }
+    guard stat(self.bytes, &result) == 0 else { throw Errno.current }
     return FileStat(rawValue: result)
   }
 }

@@ -901,8 +901,11 @@ public struct Errno: RawRepresentable, Error {
   public static var EOPNOTSUPP: Errno { notSupportedOnSocket }
 }
 
-/// errno: Set when a system call detects an error
-public var errno: Errno {
-  get { Errno(rawValue: _errno) }
-  set { _errno = newValue.rawValue }
+extension Errno {
+  /// TODO: Docs
+  public static var current: Errno {
+    get { Errno(rawValue: _errno) }
+    set { _errno = newValue.rawValue }
+  }
 }
+

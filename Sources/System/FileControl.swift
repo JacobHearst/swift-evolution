@@ -12,19 +12,19 @@ extension FileDescriptor {
 extension FileDescriptor.Control {
   fileprivate func cntl(_ command: CInt) throws -> CInt {
     let value = _fcntl(self.rawValue, command)
-    guard value != -1 else { throw errno }
+    guard value != -1 else { throw Errno.current }
     return value
   }
   fileprivate func cntl(_ command: CInt, _ arg: CInt) throws -> CInt {
     let value = _fcntl(self.rawValue, command, arg)
-    guard value != -1 else { throw errno }
+    guard value != -1 else { throw Errno.current }
     return value
   }
   fileprivate func cntl(
     _ command: CInt, _ ptr: UnsafeMutableRawPointer
   ) throws -> CInt {
     let value = _fcntl(self.rawValue, command, ptr)
-    guard value != -1 else { throw errno }
+    guard value != -1 else { throw Errno.current }
     return value
   }
 }

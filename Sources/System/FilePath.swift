@@ -105,6 +105,8 @@ extension FilePath {
   public static var MAXPATHLEN: Int { maxLength}
 }
 
+extension FilePath: Hashable, Codable {}
+
 extension FilePath {
   fileprivate func _invariantCheck() {
     assert(bytes.last! == 0)

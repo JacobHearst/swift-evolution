@@ -99,7 +99,7 @@ extension Socket {
   }
 
   /*public*/internal func listen(backlog: Int) throws {
-    guard _listen(self.rawValue, CInt(backlog)) == 0 else { throw errno }
+    guard _listen(self.rawValue, CInt(backlog)) == 0 else { throw Errno.current }
   }
 
   /*public*/internal func accept(
@@ -111,7 +111,7 @@ extension Socket {
     _ buffer: UnsafeRawBufferPointer, _ flags: MessageFlags
   ) throws -> Int {
     let result = _send(self.rawValue, buffer.baseAddress, buffer.count, flags.rawValue)
-    guard result != -1 else { throw errno }
+    guard result != -1 else { throw Errno.current }
     return Int(result)
   }
   // TODO: Convenience helper taking ByteBuffer...
@@ -127,7 +127,7 @@ extension Socket {
     _ buffer: UnsafeMutableRawBufferPointer, _ flags: MessageFlags
   ) throws -> Int {
     let result = _recv(self.rawValue, buffer.baseAddress, buffer.count, flags.rawValue)
-    guard result != -1 else { throw errno }
+    guard result != -1 else { throw Errno.current }
     return Int(result)
   }
 

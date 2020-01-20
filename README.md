@@ -101,7 +101,7 @@ public struct FileDescriptor: RawRepresentable {
   public init(rawValue: CInt) { self.rawValue = rawValue }
 
   public func close() throws {
-    guard _close(self.rawValue) != -1 else { throw errno }
+    guard _close(self.rawValue) != -1 else { throw Errno.current }
   }
 }
 ```

@@ -51,11 +51,11 @@
 
 extension FileDescriptor {
   /*public*/internal func changeFlags(to flags: FileFlags) throws {
-    guard _fchflags(self.rawValue, flags.rawValue) == 0 else { throw errno }
+    guard _fchflags(self.rawValue, flags.rawValue) == 0 else { throw Errno.current }
   }
 }
 extension FilePath {
   /*public*/internal func changeFlags(to flags: FileFlags) throws {
-    guard _chflags(self.bytes, flags.rawValue) == 0 else { throw errno }
+    guard _chflags(self.bytes, flags.rawValue) == 0 else { throw Errno.current }
   }
 }
