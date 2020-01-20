@@ -8,30 +8,30 @@ import Darwin
 // Types
 public typealias CChar = Int8
 public typealias CInt = Int32
-public typealias CUInt32T = UInt32
-public typealias CUInt16T = UInt16
-public typealias CInt16T = Int16
-public typealias CUInt = u_int
+/*public*/internal typealias CUInt32T = UInt32
+/*public*/internal typealias CUInt16T = UInt16
+/*public*/internal typealias CInt16T = Int16
+/*public*/internal typealias CUInt = u_int
 
 public typealias CModeT = mode_t
-public typealias COffT = off_t
+/*public*/internal typealias COffT = off_t
 
-public typealias CFILE = FILE
+/*public*/internal typealias CFILE = FILE
 
-public typealias CACLT = acl_t
-public typealias CACLTagT = acl_tag_t.RawValue
-public typealias CACLFlagT = acl_flag_t.RawValue
-public typealias CACLEntryT = acl_entry_t
-public typealias CACLPermT = acl_perm_t.RawValue
+/*public*/internal typealias CACLT = acl_t
+/*public*/internal typealias CACLTagT = acl_tag_t.RawValue
+/*public*/internal typealias CACLFlagT = acl_flag_t.RawValue
+/*public*/internal typealias CACLEntryT = acl_entry_t
+/*public*/internal typealias CACLPermT = acl_perm_t.RawValue
 
-public typealias CDevT = dev_t
-public typealias CNLinkT = nlink_t
-public typealias CStat = stat
-public typealias CInoT = ino_t
-public typealias CUIDT = uid_t
-public typealias CGIDT = gid_t
-public typealias CTimespec = timespec
-public typealias CTimeT = time_t
+/*public*/internal typealias CDevT = dev_t
+/*public*/internal typealias CNLinkT = nlink_t
+/*public*/internal typealias CStat = stat
+/*public*/internal typealias CInoT = ino_t
+/*public*/internal typealias CUIDT = uid_t
+/*public*/internal typealias CGIDT = gid_t
+/*public*/internal typealias CTimespec = timespec
+/*public*/internal typealias CTimeT = time_t
 
 // Internal types
 internal typealias CFStoreT = fstore_t
@@ -50,7 +50,7 @@ internal typealias CSSizeT = ssize_t
 // Polling
 
 #if os(macOS) || os(iOS) || os(watchOS) || os(tvOS)
-public typealias CKEvent = kevent
+/*public*/internal typealias CKEvent = kevent
 #else
 #error("FIXME: Linux epoll support")
 #endif
