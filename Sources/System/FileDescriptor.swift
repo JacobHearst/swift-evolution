@@ -25,6 +25,7 @@ extension FileDescriptorInterchangable {
 }
 
 /// TODO: Docs
+@frozen
 public struct FileDescriptor: FileDescriptorInterchangable {
   public let rawValue: CInt
   public init(rawValue: CInt) { self.rawValue = rawValue }
@@ -33,6 +34,7 @@ public struct FileDescriptor: FileDescriptorInterchangable {
 
 extension FileDescriptor {
   /// TODO: Docs
+  @frozen
   public struct AccessMode: RawRepresentable {
     public var rawValue: CInt
     public init(rawValue: CInt) { self.rawValue = rawValue }
@@ -57,6 +59,7 @@ extension FileDescriptor {
   }
 
   /// TODO: Docs
+  @frozen
   public struct OpenOptions: OptionSet {
     public let rawValue: CInt
     public init(rawValue: CInt) { self.rawValue = rawValue }
@@ -174,6 +177,7 @@ extension FileDescriptor {
   }
 
   /// TODO: Docs
+  @frozen
   public struct SeekOrigin: RawRepresentable {
     public var rawValue: CInt
     public init(rawValue: CInt) { self.rawValue = rawValue }

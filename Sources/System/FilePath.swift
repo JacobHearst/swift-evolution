@@ -21,6 +21,8 @@ extension UnsafeBufferPointer where Element == CChar {
   }
 }
 
+// NOTE: FilePath not frozen for ABI flexibility
+
 /// TODO: Docs
 public struct FilePath {
   /// TODO: Docs, Includes nul-terminator

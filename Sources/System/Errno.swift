@@ -2,6 +2,7 @@
 // extensively #if/else/endif
 
 /// TODO: Docs
+@frozen
 public struct Errno: RawRepresentable, Error {
   public let rawValue: CInt
   public init(rawValue: CInt) { self.rawValue = rawValue }
