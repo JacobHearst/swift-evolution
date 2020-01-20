@@ -24,8 +24,16 @@ extension UnsafeBufferPointer where Element == CChar {
 // NOTE: FilePath not frozen for ABI flexibility
 
 /// TODO: Docs
+/// TODO: Note Equatable/Hashable for programmatic use and semantics over
+///       raw bytes. FS behavior is FS-specific, presentation to users should
+///       whatever whatever, etc. Case sensitivity, normalization, relative paths
+///       symlinks, etc.
+///
 public struct FilePath {
   /// TODO: Docs, Includes nul-terminator
+  /// TODO: Consider making a custom RRC for this (since we don't have
+  ///       opaque return types with bound associated types)
+  /// TODO: Consider adding a withNulTermiantedBytes or withCString
   public var bytes: [CChar]
 
   /// TODO: Docs, Length of the file path (excluding nul terminator)
@@ -33,6 +41,8 @@ public struct FilePath {
 
   /// TODO: Docs, Just the byte content of the path itself, excluding nul
   /// terminator
+  /// TODO: Consider making a custom RRC for this (since we don't have
+  ///       opaque return types with bound associated types)
   public var bytesDroppingNulTerminator: ArraySlice<CChar> { bytes.dropLast() }
 
   public init() {
@@ -56,6 +66,7 @@ extension FilePath {
   }
 
   /// TODO: Docs
+  /// TODO: cString or similar, pick what String does
   public init(nulTerminatedCPtr cPtr: UnsafePointer<CChar>) {
     self.init(UnsafeBufferPointer(start: cPtr, count: 1+_strlen(cPtr)))
   }
