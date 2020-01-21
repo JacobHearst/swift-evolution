@@ -6,14 +6,24 @@ import Darwin
 #endif
 
 // Types
+
+/// TODO: Consider a different naming scheme.
+/// This exists to service RawRepresentable structs
 public typealias CChar = Int8
+
+/// TODO: Consider a different naming scheme.
+/// This exists to service RawRepresentable structs
 public typealias CInt = Int32
+
 /*public*/internal typealias CUInt32T = UInt32
 /*public*/internal typealias CUInt16T = UInt16
 /*public*/internal typealias CInt16T = Int16
 /*public*/internal typealias CUInt = u_int
 
+/// TODO: Consider a different naming scheme.
+/// This exists to service RawRepresentable structs
 public typealias CModeT = mode_t
+
 /*public*/internal typealias COffT = off_t
 
 /*public*/internal typealias CFILE = FILE

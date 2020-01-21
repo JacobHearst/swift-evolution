@@ -2,6 +2,8 @@
 
 A platform-specific library providing interfaces to syscalls and relevant currency types.
 
+## TODO: Rewrite for trimmed down API...
+
 **Note: This is still a prototype and is completely untested!**
 
 ### "What is a syscall?"

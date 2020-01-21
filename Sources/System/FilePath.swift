@@ -114,7 +114,7 @@ extension FilePath {
   /// TODO: Docs
   public static var maxLength: Int { Int(_MAXPATHLEN) }
 
-  @available(*, unavailable, renamed: "maxLength")
+  @available(*, deprecated, renamed: "maxLength")
   public static var MAXPATHLEN: Int { maxLength}
 }
 
