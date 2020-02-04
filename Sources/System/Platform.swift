@@ -412,6 +412,8 @@ internal let _close = close
 internal let _read = read
 internal let _pread = pread
 internal let _lseek = lseek
+internal let _write = write
+internal let _pwrite = pwrite
 
 internal let _fopen = fopen
 internal let _fclose = fclose

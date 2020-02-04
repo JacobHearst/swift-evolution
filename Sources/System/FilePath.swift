@@ -30,51 +30,41 @@ extension UnsafeBufferPointer where Element == CChar {
 ///       symlinks, etc.
 ///
 public struct FilePath {
-  /// TODO: Docs, Includes nul-terminator
-  /// TODO: Consider making a custom RRC for this (since we don't have
-  ///       opaque return types with bound associated types)
-  /// TODO: Consider adding a withNulTermiantedBytes or withCString
-  public var bytes: [CChar]
-
-  /// TODO: Docs, Length of the file path (excluding nul terminator)
-  public var length: Int { bytes.count - 1 }
-
-  /// TODO: Docs, Just the byte content of the path itself, excluding nul
-  /// terminator
-  /// TODO: Consider making a custom RRC for this (since we don't have
-  ///       opaque return types with bound associated types)
-  public var bytesDroppingNulTerminator: ArraySlice<CChar> { bytes.dropLast() }
+  internal var bytes: [CChar]
 
   public init() {
     self.bytes = [0]
     _invariantCheck()
   }
+}
+
+//
+// MARK: - Public Interfaces
+//
+extension FilePath {
+  /// TODO: Docs, Length of the file path (excluding nul terminator)
+  public var length: Int { bytes.count - 1 }
 
   /// TODO: Docs
-  public init<C: Collection>(nulTerminatedBytes bytes: C) where C.Element == CChar {
+  public static var maxLength: Int { Int(_MAXPATHLEN) }
+
+  @available(*, deprecated, renamed: "maxLength")
+  public static var MAXPATHLEN: Int { maxLength}
+}
+extension FilePath: Hashable, Codable {}
+
+extension FilePath {
+  internal init<C: Collection>(nulTerminatedBytes bytes: C) where C.Element == CChar {
     self.bytes = Array(bytes)
     _invariantCheck()
   }
 }
 
 extension FilePath {
-  /// TODO: Docs
-  public init<C: Collection>(_ bytes: C) where C.Element == CChar {
+  internal init<C: Collection>(_ bytes: C) where C.Element == CChar {
     var nulTermBytes = Array(bytes)
     nulTermBytes.append(0)
     self.init(nulTerminatedBytes: nulTermBytes)
-  }
-
-  /// TODO: Docs
-  /// TODO: cString or similar, pick what String does
-  public init(nulTerminatedCPtr cPtr: UnsafePointer<CChar>) {
-    self.init(UnsafeBufferPointer(start: cPtr, count: 1+_strlen(cPtr)))
-  }
-
-  /// TODO: Docs
-  public init(_ str: String) {
-    var str = str
-    self = str.withUTF8 { FilePath($0._asCChar) }
   }
 
   internal init(
@@ -89,36 +79,56 @@ extension FilePath {
       })
     // TODO: We could consider shrinking now to save space.
   }
-
 }
+
+//
+// MARK: - CString interfaces
+//
+extension FilePath {
+  /// TODO: docs
+  public init(cString ptr: UnsafePointer<CChar>) {
+    self.init(UnsafeBufferPointer(start: ptr, count: 1+_strlen(ptr)))
+  }
+
+  /// TODO: docs
+  public func withCString<Result>(
+    _ body: (UnsafePointer<Int8>) throws -> Result
+  ) rethrows -> Result {
+    try bytes.withUnsafeBufferPointer { try body($0.baseAddress!) }
+  }
+
+  // TODO: in the future, with opaque result types with associated
+  // type constraints, we want to provide a RAC for termianted
+  // contents and unterminated contents.
+}
+
+//
+// MARK: - String interfaces
+//
 extension FilePath: ExpressibleByStringLiteral {
+  /// TODO: docs
   public init(stringLiteral: String) {
     self.init(stringLiteral)
   }
-}
 
+  /// TODO: docs
+  public init(_ str: String) {
+    var str = str
+    self = str.withUTF8 { FilePath($0._asCChar) }
+  }
+}
 extension String {
   /// TODO: Docs
   public init(_ path: FilePath) {
-    self = path.bytesDroppingNulTerminator.withUnsafeBytes {
-      String(decoding: $0, as: UTF8.self)
-    }
+    self = path.withCString { String(cString: $0) }
   }
 }
 
 extension FilePath: CustomStringConvertible {
+  /// TODO: docs
   public var description: String { String(self) }
 }
 
-extension FilePath {
-  /// TODO: Docs
-  public static var maxLength: Int { Int(_MAXPATHLEN) }
-
-  @available(*, deprecated, renamed: "maxLength")
-  public static var MAXPATHLEN: Int { maxLength}
-}
-
-extension FilePath: Hashable, Codable {}
 
 extension FilePath {
   fileprivate func _invariantCheck() {
@@ -126,3 +136,5 @@ extension FilePath {
     assert(bytes.firstIndex(of: 0) == bytes.count - 1)
   }
 }
+
+// TODO: Look at SPM, which has types and POSIX stuff.
