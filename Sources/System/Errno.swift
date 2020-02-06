@@ -1,11 +1,15 @@
 // NOTE: Comments and meanings below are for Darwin. Other platforms may have to
 // extensively #if/else/endif
 
-/// TODO: Docs
+/// An error number used by system calls to communicate what kind of error ocurred.
 @frozen
 public struct Errno: RawRepresentable, Error {
+  /// The raw C `int`
   public let rawValue: CInt
+
+  /// Create a strongly typed `Errno` from a raw C `int`
   public init(rawValue: CInt) { self.rawValue = rawValue }
+
   private init(_ raw: CInt) { self.init(rawValue: raw) }
 
   /// Error. Not used.
@@ -219,7 +223,7 @@ public struct Errno: RawRepresentable, Error {
 
   /// ENFILE: Too many open files in system.
   ///
-  /// Maximum number of file descrip- tors allowable on the system has been
+  /// Maximum number of file descriptors allowable on the system has been
   /// reached and a requests for an open cannot be satisfied until at least one
   /// has been closed.
   public static var tooManyOpenFilesInSystem: Errno { Errno(_ENFILE) }
@@ -229,8 +233,7 @@ public struct Errno: RawRepresentable, Error {
 
   /// EMFILE: Too many open files.
   ///
-  /// <As released, the limit on the number of open files per process is 64.>
-  /// Getdtablesize(2) will obtain the current limit.
+  /// `getdtablesize` will obtain the current limit.
   public static var tooManyOpenFiles: Errno { Errno(_EMFILE) }
 
   @available(*, deprecated, renamed: "tooManyOpenFiles")
@@ -903,7 +906,7 @@ public struct Errno: RawRepresentable, Error {
 }
 
 extension Errno {
-  /// TODO: Docs
+  /// errno: The current error value, set by system calls on error.
   public static var current: Errno {
     get { Errno(rawValue: _errno) }
     set { _errno = newValue.rawValue }

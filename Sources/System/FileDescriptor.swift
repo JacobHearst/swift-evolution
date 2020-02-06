@@ -1,42 +1,27 @@
-/*public*/internal protocol FileDescriptorInterchangable: RawRepresentable where RawValue == CInt {
-  var rawValue: CInt { get }
-  init(rawValue: CInt)
-}
-
-// Interchange with `FileDescriptor`
-extension FileDescriptorInterchangable {
-  /*public*/internal init(_ fd: FileDescriptor) {
-    self.init(rawValue: fd.rawValue)
-  }
-
-  /*public*/internal var fileDescriptor: FileDescriptor { FileDescriptor(rawValue: self.rawValue) }
-
-  internal init(_checking fd: CInt) throws {
-    guard fd != -1 else { throw Errno.current }
-    self.init(rawValue: fd)
-  }
-}
-
-extension FileDescriptorInterchangable {
-  // All file descriptors can be closed
-  /*public*/internal func close() throws {
-    guard _close(self.rawValue) != -1 else { throw Errno.current }
-  }
-}
-
-/// TODO: Docs
+/// An abstract handle to input/output data resources, such as files and sockets.
+///
+/// NOTE: Programmers should ensure that FileDescriptors are not reused after being closed.
+/// TODO: Describe the "non-linear"-ness of this type better...
+/// TODO: More description, example usage
 @frozen
-public struct FileDescriptor: FileDescriptorInterchangable {
+public struct FileDescriptor: RawRepresentable {
+  /// The raw C `int`
   public let rawValue: CInt
+
+  /// Create a strongly-typed `FileDescriptor` from a raw C `int`
   public init(rawValue: CInt) { self.rawValue = rawValue }
+
   fileprivate init(_ raw: CInt) { self.init(rawValue: raw) }
 }
 
 extension FileDescriptor {
-  /// TODO: Docs
+  /// How to access a newly opened file: read, write, or both.
   @frozen
   public struct AccessMode: RawRepresentable {
+    /// The raw C `int`
     public var rawValue: CInt
+
+    /// Create a strongly-typed `AccessMode` from a raw C `int`
     public init(rawValue: CInt) { self.rawValue = rawValue }
 
     /// O_RDONLY: open for reading only
@@ -58,11 +43,15 @@ extension FileDescriptor {
     public static var O_RDWR: AccessMode { readWrite }
   }
 
-  /// TODO: Docs
+  /// Options specifying behavior on opening a file
   @frozen
   public struct OpenOptions: OptionSet {
-    public let rawValue: CInt
+    /// The raw C `int`
+    public var rawValue: CInt
+
+    /// Create a strongly-typed `OpenOptions` from a raw C `int`
     public init(rawValue: CInt) { self.rawValue = rawValue }
+
     private init(_ raw: CInt) { self.init(rawValue: raw) }
 
     /// O_NONBLOCK: do not block on open or for data to become available
@@ -176,10 +165,13 @@ extension FileDescriptor {
 
   }
 
-  /// TODO: Docs
+  /// Specify from whence the file descriptor's read/write file offset applies.
   @frozen
   public struct SeekOrigin: RawRepresentable {
+    /// The raw C `int`
     public var rawValue: CInt
+
+    /// Create a strongly-typed `SeekOrigin` from a raw C `int`
     public init(rawValue: CInt) { self.rawValue = rawValue }
 
     /// SEEK_SET: the offset is set to offset bytes.
@@ -216,12 +208,4 @@ extension FileDescriptor {
     public static var SEEK_DATA: SeekOrigin { nextData }
   }
 }
-
-
-
-
-// Eek, how to avoid the copy for the mutable template?
-//    public static func makeTemporary(_ template: String) throws -> Descriptor {
-//      guard let desc = mkstemp(template) else { throw err }
-//    }
 

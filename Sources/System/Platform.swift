@@ -1,18 +1,16 @@
 
 #if os(macOS) || os(iOS) || os(watchOS) || os(tvOS)
-import Darwin
+import Darwin // TODO: private import
 #else
 #error("FIXME: Linux support, other platform support")
 #endif
 
 // Types
 
-/// TODO: Consider a different naming scheme.
-/// This exists to service RawRepresentable structs
+/// The type of a plain C `char`
 public typealias CChar = Int8
 
-/// TODO: Consider a different naming scheme.
-/// This exists to service RawRepresentable structs
+/// The type of a plain C `int`
 public typealias CInt = Int32
 
 /*public*/internal typealias CUInt32T = UInt32
@@ -20,8 +18,7 @@ public typealias CInt = Int32
 /*public*/internal typealias CInt16T = Int16
 /*public*/internal typealias CUInt = u_int
 
-/// TODO: Consider a different naming scheme.
-/// This exists to service RawRepresentable structs
+/// The type of a plain C `mode_t`
 public typealias CModeT = mode_t
 
 /*public*/internal typealias COffT = off_t

@@ -23,15 +23,23 @@ extension UnsafeBufferPointer where Element == CChar {
 
 // NOTE: FilePath not frozen for ABI flexibility
 
-/// TODO: Docs
-/// TODO: Note Equatable/Hashable for programmatic use and semantics over
-///       raw bytes. FS behavior is FS-specific, presentation to users should
-///       whatever whatever, etc. Case sensitivity, normalization, relative paths
-///       symlinks, etc.
+/// A managed, null-terminated bag-of-bytes representing a location on the file system
 ///
+/// This example creates a FilePath from a string literal and uses it to open and append to a log file
+///
+///     let message: String = ...
+///     let path: FilePath = "/tmp/log"
+///     let fd = try FileDescriptor.open(path, .writeOnly, options: .append)
+///     try fd.closeAfter { _ = try fd.write(message.utf8) }
+///
+/// - Note: FilePaths are Equatable and Hashable by equating / hashing their raw byte contents,
+/// allowing them to be used as keys in Dictionaries. However, path equivalence is a
+/// file-system-specific concept. A specific file system may, e.g., consider paths equivalent after
+/// case conversion, Unicode normalization, or resolving symbolic links.
 public struct FilePath {
   internal var bytes: [CChar]
 
+  /// Creates an empty path
   public init() {
     self.bytes = [0]
     _invariantCheck()
@@ -42,10 +50,10 @@ public struct FilePath {
 // MARK: - Public Interfaces
 //
 extension FilePath {
-  /// TODO: Docs, Length of the file path (excluding nul terminator)
+  /// The length of the file path, excluding the null-terminator
   public var length: Int { bytes.count - 1 }
 
-  /// TODO: Docs
+  /// MAXPATHLEN: the longest permissable path length after expanding symbolic links.
   public static var maxLength: Int { Int(_MAXPATHLEN) }
 
   @available(*, deprecated, renamed: "maxLength")
@@ -85,12 +93,26 @@ extension FilePath {
 // MARK: - CString interfaces
 //
 extension FilePath {
-  /// TODO: docs
-  public init(cString ptr: UnsafePointer<CChar>) {
-    self.init(UnsafeBufferPointer(start: ptr, count: 1+_strlen(ptr)))
+  /// Create a file path by copying null-termianted bytes from `cString`
+  ///
+  /// - Parameter cString: A pointer to null-terminated bytes
+  public init(cString: UnsafePointer<CChar>) {
+    self.init(UnsafeBufferPointer(start: cString, count: 1+_strlen(cString)))
   }
 
-  /// TODO: docs
+  /// Calls the given closure with a pointer to the contents of the file path,
+  /// represented as a pointer to null-terminated bytes.
+  ///
+  /// The pointer passed as an argument to `body` is valid only during the
+  /// execution of `withCString(_:)`. Do not store or return the pointer for
+  /// later use.
+  ///
+  /// - Parameter body: A closure with a pointer parameter that points to a
+  ///   null-terminated sequence of bytes. If `body` has a return
+  ///   value, that value is also used as the return value for the
+  ///   `withCString(_:)` method. The pointer argument is valid only for the
+  ///   duration of the method's execution.
+  /// - Returns: The return value, if any, of the `body` closure parameter.
   public func withCString<Result>(
     _ body: (UnsafePointer<Int8>) throws -> Result
   ) rethrows -> Result {
@@ -98,7 +120,7 @@ extension FilePath {
   }
 
   // TODO: in the future, with opaque result types with associated
-  // type constraints, we want to provide a RAC for termianted
+  // type constraints, we want to provide a RAC for terminated
   // contents and unterminated contents.
 }
 
@@ -106,26 +128,34 @@ extension FilePath {
 // MARK: - String interfaces
 //
 extension FilePath: ExpressibleByStringLiteral {
-  /// TODO: docs
+  /// Create a file path a String literal's UTF-8 contents
+  ///
+  /// - Parameter stringLiteral: A string literal whose UTF-8 contents will be the contents of the created path
   public init(stringLiteral: String) {
     self.init(stringLiteral)
   }
 
-  /// TODO: docs
-  public init(_ str: String) {
-    var str = str
+  /// Create a file path from a string's UTF-8 contents
+  ///
+  /// - Parameter string: A string whose UTF-8 contents will be the contents of the created path
+  public init(_ string: String) {
+    var str = string
     self = str.withUTF8 { FilePath($0._asCChar) }
   }
 }
 extension String {
-  /// TODO: Docs
+  /// Create a string from a file path
+  ///
+  /// - Parameter path: The file path whose bytes will be interpreted as UTF-8.
+  /// Any encoding errors in the path's bytes will be error corrected.
+  /// This means that, depending on the semantics of the specific file system, some paths
+  /// cannot be round-tripped through a string.
   public init(_ path: FilePath) {
     self = path.withCString { String(cString: $0) }
   }
 }
 
 extension FilePath: CustomStringConvertible {
-  /// TODO: docs
   public var description: String { String(self) }
 }
 

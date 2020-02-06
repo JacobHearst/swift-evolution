@@ -1,8 +1,12 @@
-/// TODO: docs
+/// The file permission bits governing access to a file
 @frozen
 public struct FilePermissions: OptionSet {
+  /// The raw C `mode_t`
   public let rawValue: CModeT
+
+  /// Create a strongly-typed `FilePermissions` from a raw C `mode_t`
   public init(rawValue: CModeT) { self.rawValue = rawValue }
+
   private init(_ raw: CModeT) { self.init(rawValue: raw) }
 
   /// Read permissions for other
