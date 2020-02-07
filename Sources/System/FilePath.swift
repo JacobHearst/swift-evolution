@@ -23,19 +23,22 @@ extension UnsafeBufferPointer where Element == CChar {
 
 // NOTE: FilePath not frozen for ABI flexibility
 
-/// A managed, null-terminated bag-of-bytes representing a location on the file system
+/// A managed, null-terminated bag-of-bytes representing a location on the file
+/// system
 ///
-/// This example creates a FilePath from a string literal and uses it to open and append to a log file
+/// This example creates a FilePath from a string literal and uses it to open
+/// and append to a log file.
 ///
 ///     let message: String = ...
 ///     let path: FilePath = "/tmp/log"
 ///     let fd = try FileDescriptor.open(path, .writeOnly, options: .append)
 ///     try fd.closeAfter { _ = try fd.write(message.utf8) }
 ///
-/// - Note: FilePaths are Equatable and Hashable by equating / hashing their raw byte contents,
-/// allowing them to be used as keys in Dictionaries. However, path equivalence is a
-/// file-system-specific concept. A specific file system may, e.g., consider paths equivalent after
-/// case conversion, Unicode normalization, or resolving symbolic links.
+/// - Note: FilePaths are Equatable and Hashable by equating / hashing their
+///   raw byte contents, allowing them to be used as keys in Dictionaries.
+///   However, path equivalence is a file-system-specific concept. A specific
+///   file system may, e.g., consider paths equivalent after case conversion,
+///   Unicode normalization, or resolving symbolic links.
 public struct FilePath {
   internal var bytes: [CChar]
 
@@ -56,7 +59,7 @@ extension FilePath {
   /// MAXPATHLEN: the longest permissable path length after expanding symbolic links.
   public static var maxLength: Int { Int(_MAXPATHLEN) }
 
-  @available(*, deprecated, renamed: "maxLength")
+  @available(*, unavailable, renamed: "maxLength")
   public static var MAXPATHLEN: Int { maxLength}
 }
 extension FilePath: Hashable, Codable {}
@@ -147,9 +150,9 @@ extension String {
   /// Create a string from a file path
   ///
   /// - Parameter path: The file path whose bytes will be interpreted as UTF-8.
-  /// Any encoding errors in the path's bytes will be error corrected.
-  /// This means that, depending on the semantics of the specific file system, some paths
-  /// cannot be round-tripped through a string.
+  /// - Note: Any encoding errors in the path's bytes will be error corrected.
+  ///   This means that, depending on the semantics of the specific file system,
+  ///   some paths cannot be round-tripped through a string.
   public init(_ path: FilePath) {
     self = path.withCString { String(cString: $0) }
   }

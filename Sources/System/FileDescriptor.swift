@@ -27,19 +27,19 @@ extension FileDescriptor {
     /// O_RDONLY: open for reading only
     public static var readOnly: AccessMode { AccessMode(rawValue: _O_RDONLY) }
 
-    @available(*, deprecated, renamed: "readOnly")
+    @available(*, unavailable, renamed: "readOnly")
     public static var O_RDONLY: AccessMode { readOnly }
 
     /// O_WRONLY: open for writing only
     public static var writeOnly: AccessMode { AccessMode(rawValue: _O_WRONLY) }
 
-    @available(*, deprecated, renamed: "writeOnly")
+    @available(*, unavailable, renamed: "writeOnly")
     public static var O_WRONLY: AccessMode { writeOnly }
 
     /// O_RDWR: open for reading and writing
     public static var readWrite: AccessMode { AccessMode(rawValue: _O_RDWR) }
 
-    @available(*, deprecated, renamed: "readWrite")
+    @available(*, unavailable, renamed: "readWrite")
     public static var O_RDWR: AccessMode { readWrite }
   }
 
@@ -63,7 +63,7 @@ extension FileDescriptor {
     /// subsequent I/O on the open file non-blocking.
     public static var nonBlocking: OpenOptions { OpenOptions(_O_NONBLOCK) }
 
-    @available(*, deprecated, renamed: "nonBlocking")
+    @available(*, unavailable, renamed: "nonBlocking")
     public static var O_NONBLOCK: OpenOptions { nonBlocking }
 
     /// O_APPEND: append on each write
@@ -72,13 +72,13 @@ extension FileDescriptor {
     /// appended to the end
     public static var append: OpenOptions { OpenOptions(_O_APPEND) }
 
-    @available(*, deprecated, renamed: "append")
+    @available(*, unavailable, renamed: "append")
     public static var O_APPEND: OpenOptions { append }
 
     /// O_CREAT: create file if it does not exist
     public static var create: OpenOptions { OpenOptions(_O_CREAT) }
 
-    @available(*, deprecated, renamed: "create")
+    @available(*, unavailable, renamed: "create")
     public static var O_CREAT: OpenOptions { create }
 
     /// O_TRUNC: truncate size to 0
@@ -87,7 +87,7 @@ extension FileDescriptor {
     /// length
     public static var truncate: OpenOptions { OpenOptions(_O_TRUNC) }
 
-    @available(*, deprecated, renamed: "truncate")
+    @available(*, unavailable, renamed: "truncate")
     public static var O_TRUNC: OpenOptions { truncate }
 
     /// O_EXCL: error if O_CREAT and the file exists
@@ -99,7 +99,7 @@ extension FileDescriptor {
     /// points to a non-existent name.
     public static var exclusiveCreate: OpenOptions { OpenOptions(_O_EXCL) }
 
-    @available(*, deprecated, renamed: "exclusiveCreate")
+    @available(*, unavailable, renamed: "exclusiveCreate")
     public static var O_EXCL: OpenOptions { exclusiveCreate }
 
     /// O_SHLOCK: atomically obtain a shared lock
@@ -110,7 +110,7 @@ extension FileDescriptor {
     /// (provided that the underlying filesystem supports locking).
     public static var sharedLock: OpenOptions { OpenOptions(_O_SHLOCK) }
 
-    @available(*, deprecated, renamed: "sharedLock")
+    @available(*, unavailable, renamed: "sharedLock")
     public static var O_SHLOCK: OpenOptions { sharedLock }
 
     /// O_EXLOCK: atomically obtain an exclusive lock
@@ -121,7 +121,7 @@ extension FileDescriptor {
     /// (provided that the underlying filesystem supports locking).
     public static var exclusiveLock: OpenOptions { OpenOptions(_O_EXLOCK) }
 
-    @available(*, deprecated, renamed: "exclusiveLock")
+    @available(*, unavailable, renamed: "exclusiveLock")
     public static var O_EXLOCK: OpenOptions { exclusiveLock }
 
     /// O_NOFOLLOW: do not follow symlinks
@@ -130,7 +130,7 @@ extension FileDescriptor {
     /// symbolic link then the open() will fail.
     public static var noFollow: OpenOptions { OpenOptions(_O_NOFOLLOW) }
 
-    @available(*, deprecated, renamed: "noFollow")
+    @available(*, unavailable, renamed: "noFollow")
     public static var O_NOFOLLOW: OpenOptions { noFollow }
 
     /// O_SYMLINK: allow open of symlinks
@@ -140,7 +140,7 @@ extension FileDescriptor {
     /// what it links to.
     public static var symlink: OpenOptions { OpenOptions(_O_SYMLINK) }
 
-    @available(*, deprecated, renamed: "symlink")
+    @available(*, unavailable, renamed: "symlink")
     public static var O_SYMLINK: OpenOptions { symlink }
 
     /// O_EVTONLY: descriptor requested for event notifications only
@@ -150,7 +150,7 @@ extension FileDescriptor {
     /// unmount of the volume that contains the file.
     public static var eventOnly: OpenOptions { OpenOptions(_O_EVTONLY) }
 
-    @available(*, deprecated, renamed: "eventOnly")
+    @available(*, unavailable, renamed: "eventOnly")
     public static var O_EVTONLY: OpenOptions { eventOnly }
 
     /// O_CLOEXEC: mark as close-on-exec
@@ -160,7 +160,7 @@ extension FileDescriptor {
     /// descriptor flags can be inspected using the F_GETFD fcntl.
     public static var closeOnExec: OpenOptions { OpenOptions(_O_CLOEXEC) }
 
-    @available(*, deprecated, renamed: "closeOnExec")
+    @available(*, unavailable, renamed: "closeOnExec")
     public static var O_CLOEXEC: OpenOptions { closeOnExec }
 
   }
@@ -177,19 +177,19 @@ extension FileDescriptor {
     /// SEEK_SET: the offset is set to offset bytes.
     public static var start: SeekOrigin { SeekOrigin(rawValue: _SEEK_SET) }
 
-    @available(*, deprecated, renamed: "start")
+    @available(*, unavailable, renamed: "start")
     public static var SEEK_SET: SeekOrigin { start }
 
     /// SEEK_CUR: the offset is set to its current location plus offset bytes.
     public static var current: SeekOrigin { SeekOrigin(rawValue: _SEEK_CUR) }
 
-    @available(*, deprecated, renamed: "current")
+    @available(*, unavailable, renamed: "current")
     public static var SEEK_CUR: SeekOrigin { current }
 
     /// SEEK_END: the offset is set to the size of the file plus offset bytes.
     public static var end: SeekOrigin { SeekOrigin(rawValue: _SEEK_END) }
 
-    @available(*, deprecated, renamed: "end")
+    @available(*, unavailable, renamed: "end")
     public static var SEEK_END: SeekOrigin { end }
 
     /// SEEK_HOLE: the offset is set to the start of the next hole greater than
@@ -197,14 +197,14 @@ extension FileDescriptor {
     /// below.
     public static var nextHole: SeekOrigin { SeekOrigin(rawValue: _SEEK_HOLE) }
 
-    @available(*, deprecated, renamed: "nextHole")
+    @available(*, unavailable, renamed: "nextHole")
     public static var SEEK_HOLE: SeekOrigin { nextHole }
 
     /// SEEK_DATA: the offset is set to the start of the next non-hole file
     /// region greater than or equal to the supplied offset.
     public static var nextData: SeekOrigin { SeekOrigin(rawValue: _SEEK_DATA) }
 
-    @available(*, deprecated, renamed: "nextData")
+    @available(*, unavailable, renamed: "nextData")
     public static var SEEK_DATA: SeekOrigin { nextData }
   }
 }

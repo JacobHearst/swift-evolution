@@ -15,7 +15,7 @@ public struct Errno: RawRepresentable, Error {
   /// Error. Not used.
   public static var notUsed: Errno { Errno(_ERRNO_NOT_USED) }
 
-  @available(*, deprecated, renamed: "notUsed")
+  @available(*, unavailable, renamed: "notUsed")
   public static var ERRNO_NOT_USED: Errno { notUsed }
 
   /// EPERM: Operation not permitted.
@@ -24,7 +24,7 @@ public struct Errno: RawRepresentable, Error {
   /// appropriate privileges or to the owner of a file or other resources.
   public static var notPermitted: Errno { Errno(_EPERM) }
 
-  @available(*, deprecated, renamed: "notPermitted")
+  @available(*, unavailable, renamed: "notPermitted")
   public static var EPERM: Errno { notPermitted }
 
   /// ENOENT: No such file or directory.
@@ -33,7 +33,7 @@ public struct Errno: RawRepresentable, Error {
   /// empty string.
   public static var noSuchFileOrDirectory: Errno { Errno(_ENOENT) }
 
-  @available(*, deprecated, renamed: "noSuchFileOrDirectory")
+  @available(*, unavailable, renamed: "noSuchFileOrDirectory")
   public static var ENOENT: Errno { noSuchFileOrDirectory }
 
   /// ESRCH: No such process.
@@ -42,7 +42,7 @@ public struct Errno: RawRepresentable, Error {
   /// process ID.
   public static var noSuchProcess: Errno { Errno(_ESRCH) }
 
-  @available(*, deprecated, renamed: "noSuchProcess")
+  @available(*, unavailable, renamed: "noSuchProcess")
   public static var ESRCH: Errno { noSuchProcess }
 
   /// EINTR: Interrupted function call.
@@ -53,7 +53,7 @@ public struct Errno: RawRepresentable, Error {
   /// to have returned the error condition.
   public static var interrupted: Errno { Errno(_EINTR) }
 
-  @available(*, deprecated, renamed: "interrupted")
+  @available(*, unavailable, renamed: "interrupted")
   public static var EINTR: Errno { interrupted }
 
   /// EIO: Input/output error.
@@ -63,7 +63,7 @@ public struct Errno: RawRepresentable, Error {
   /// be lost (over written) by any subsequent errors.
   public static var ioError: Errno { Errno(_EIO) }
 
-  @available(*, deprecated, renamed: "ioError")
+  @available(*, unavailable, renamed: "ioError")
   public static var EIO: Errno { ioError }
 
   /// ENXIO: No such device or address.
@@ -74,7 +74,7 @@ public struct Errno: RawRepresentable, Error {
   /// loaded on a drive.
   public static var noSuchAddressOrDevice: Errno { Errno(_ENXIO) }
 
-  @available(*, deprecated, renamed: "noSuchAddressOrDevice")
+  @available(*, unavailable, renamed: "noSuchAddressOrDevice")
   public static var ENXIO: Errno { noSuchAddressOrDevice }
 
   /// E2BIG: Arg list too long.
@@ -83,7 +83,7 @@ public struct Errno: RawRepresentable, Error {
   /// process exceeded the limit NCARGS (specified in <sys/param.h>).
   public static var argListTooLong: Errno { Errno(_E2BIG) }
 
-  @available(*, deprecated, renamed: "argListTooLong")
+  @available(*, unavailable, renamed: "argListTooLong")
   public static var E2BIG: Errno { argListTooLong }
 
   /// ENOEXEC: Exec format error.
@@ -92,7 +92,7 @@ public struct Errno: RawRepresentable, Error {
   /// permissions, was not in the for- mat required for an executable file.
   public static var noExec: Errno { Errno(_ENOEXEC) }
 
-  @available(*, deprecated, renamed: "noExec")
+  @available(*, unavailable, renamed: "noExec")
   public static var ENOEXEC: Errno { noExec }
 
   /// EBADF: Bad file descriptor.
@@ -102,7 +102,7 @@ public struct Errno: RawRepresentable, Error {
   /// (reading).
   public static var badFileDescriptor: Errno { Errno(_EBADF) }
 
-  @available(*, deprecated, renamed: "badFileDescriptor")
+  @available(*, unavailable, renamed: "badFileDescriptor")
   public static var EBADF: Errno { badFileDescriptor }
 
   /// ECHILD: No child processes.
@@ -111,7 +111,7 @@ public struct Errno: RawRepresentable, Error {
   /// or unwaited-for child processes.
   public static var noChildProcess: Errno { Errno(_ECHILD) }
 
-  @available(*, deprecated, renamed: "noChildProcess")
+  @available(*, unavailable, renamed: "noChildProcess")
   public static var ECHILD: Errno { noChildProcess }
 
   /// EDEADLK: Resource deadlock avoided.
@@ -120,7 +120,7 @@ public struct Errno: RawRepresentable, Error {
   /// a deadlock situation.
   public static var deadlock: Errno { Errno(_EDEADLK) }
 
-  @available(*, deprecated, renamed: "deadlock")
+  @available(*, unavailable, renamed: "deadlock")
   public static var EDEADLK: Errno { deadlock }
 
   /// ENOMEM: Cannot allocate memory.
@@ -131,7 +131,7 @@ public struct Errno: RawRepresentable, Error {
   /// increased to their corresponding hard limits.
   public static var noMemory: Errno { Errno(_ENOMEM) }
 
-  @available(*, deprecated, renamed: "noMemory")
+  @available(*, unavailable, renamed: "noMemory")
   public static var ENOMEM: Errno { noMemory }
 
   /// EACCES: Permission denied.
@@ -140,7 +140,7 @@ public struct Errno: RawRepresentable, Error {
   /// permissions.
   public static var permissionDenied: Errno { Errno(_EACCES) }
 
-  @available(*, deprecated, renamed: "permissionDenied")
+  @available(*, unavailable, renamed: "permissionDenied")
   public static var EACCES: Errno { permissionDenied }
 
   /// EFAULT: Bad address.
@@ -149,7 +149,7 @@ public struct Errno: RawRepresentable, Error {
   /// a call.
   public static var badAddress: Errno { Errno(_EFAULT) }
 
-  @available(*, deprecated, renamed: "badAddress")
+  @available(*, unavailable, renamed: "badAddress")
   public static var EFAULT: Errno { badAddress }
 
   /// ENOTBLK: Not a block device.
@@ -157,7 +157,7 @@ public struct Errno: RawRepresentable, Error {
   /// A block device operation was attempted on a non-block device or file.
   public static var notBlockDevice: Errno { Errno(_ENOTBLK) }
 
-  @available(*, deprecated, renamed: "notBlockDevice")
+  @available(*, unavailable, renamed: "notBlockDevice")
   public static var ENOTBLK: Errno { notBlockDevice }
 
   /// EBUSY: Resource busy.
@@ -166,7 +166,7 @@ public struct Errno: RawRepresentable, Error {
   /// manner which would have conflicted with the request.
   public static var resourceBusy: Errno { Errno(_EBUSY) }
 
-  @available(*, deprecated, renamed: "resourceBusy")
+  @available(*, unavailable, renamed: "resourceBusy")
   public static var EBUSY: Errno { resourceBusy }
 
   /// EEXIST: File exists.
@@ -175,7 +175,7 @@ public struct Errno: RawRepresentable, Error {
   /// as the new link name in a link func- tion.
   public static var fileExists: Errno { Errno(_EEXIST) }
 
-  @available(*, deprecated, renamed: "fileExists")
+  @available(*, unavailable, renamed: "fileExists")
   public static var EEXIST: Errno { fileExists }
 
   /// EXDEV: Improper link.
@@ -183,7 +183,7 @@ public struct Errno: RawRepresentable, Error {
   /// A hard link to a file on another file system was attempted.
   public static var improperLink: Errno { Errno(_EXDEV) }
 
-  @available(*, deprecated, renamed: "improperLink")
+  @available(*, unavailable, renamed: "improperLink")
   public static var EXDEV: Errno { improperLink }
 
   /// ENODEV: Operation not supported by device.
@@ -192,7 +192,7 @@ public struct Errno: RawRepresentable, Error {
   /// example, trying to read a write-only device such as a printer.
   public static var operationNotSupportedByDevice: Errno { Errno(_ENODEV) }
 
-  @available(*, deprecated, renamed: "operationNotSupportedByDevice")
+  @available(*, unavailable, renamed: "operationNotSupportedByDevice")
   public static var ENODEV: Errno { operationNotSupportedByDevice }
 
   /// ENOTDIR: Not a directory.
@@ -201,7 +201,7 @@ public struct Errno: RawRepresentable, Error {
   /// when a directory was expected.
   public static var notDirectory: Errno { Errno(_ENOTDIR) }
 
-  @available(*, deprecated, renamed: "notDirectory")
+  @available(*, unavailable, renamed: "notDirectory")
   public static var ENOTDIR: Errno { notDirectory }
 
   /// EISDIR: Is a directory.
@@ -209,7 +209,7 @@ public struct Errno: RawRepresentable, Error {
   /// An attempt was made to open a directory with write mode specified.
   public static var isDirectory: Errno { Errno(_EISDIR) }
 
-  @available(*, deprecated, renamed: "isDirectory")
+  @available(*, unavailable, renamed: "isDirectory")
   public static var EISDIR: Errno { isDirectory }
 
   /// EINVAL: Invalid argument.
@@ -218,7 +218,7 @@ public struct Errno: RawRepresentable, Error {
   /// signal to a signal or kill func- tion).
   public static var invalidArgument: Errno { Errno(_EINVAL) }
 
-  @available(*, deprecated, renamed: "invalidArgument")
+  @available(*, unavailable, renamed: "invalidArgument")
   public static var EINVAL: Errno { invalidArgument }
 
   /// ENFILE: Too many open files in system.
@@ -228,7 +228,7 @@ public struct Errno: RawRepresentable, Error {
   /// has been closed.
   public static var tooManyOpenFilesInSystem: Errno { Errno(_ENFILE) }
 
-  @available(*, deprecated, renamed: "tooManyOpenFilesInSystem")
+  @available(*, unavailable, renamed: "tooManyOpenFilesInSystem")
   public static var ENFILE: Errno { tooManyOpenFilesInSystem }
 
   /// EMFILE: Too many open files.
@@ -236,7 +236,7 @@ public struct Errno: RawRepresentable, Error {
   /// `getdtablesize` will obtain the current limit.
   public static var tooManyOpenFiles: Errno { Errno(_EMFILE) }
 
-  @available(*, deprecated, renamed: "tooManyOpenFiles")
+  @available(*, unavailable, renamed: "tooManyOpenFiles")
   public static var EMFILE: Errno { tooManyOpenFiles }
 
   /// ENOTTY: Inappropriate ioctl for device.
@@ -245,7 +245,7 @@ public struct Errno: RawRepresentable, Error {
   /// device for which the operation was inappropriate.
   public static var inappropriateIOCTLForDevice: Errno { Errno(_ENOTTY) }
 
-  @available(*, deprecated, renamed: "inappropriateIOCTLForDevice")
+  @available(*, unavailable, renamed: "inappropriateIOCTLForDevice")
   public static var ENOTTY: Errno { inappropriateIOCTLForDevice }
 
   /// ETXTBSY: Text file busy.
@@ -255,7 +255,7 @@ public struct Errno: RawRepresentable, Error {
   /// executed an open call requested write access.
   public static var textFileBusy: Errno { Errno(_ETXTBSY) }
 
-  @available(*, deprecated, renamed: "textFileBusy")
+  @available(*, unavailable, renamed: "textFileBusy")
   public static var ETXTBSY: Errno { textFileBusy }
 
   /// EFBIG: File too large.
@@ -264,7 +264,7 @@ public struct Errno: RawRepresentable, Error {
   /// filesystems including UFS, 1.8E19 bytes on HFS+ and others).
   public static var fileTooLarge: Errno { Errno(_EFBIG) }
 
-  @available(*, deprecated, renamed: "fileTooLarge")
+  @available(*, unavailable, renamed: "fileTooLarge")
   public static var EFBIG: Errno { fileTooLarge }
 
   /// ENOSPC: Device out of space.
@@ -276,7 +276,7 @@ public struct Errno: RawRepresentable, Error {
   /// system.
   public static var noSpace: Errno { Errno(_ENOSPC) }
 
-  @available(*, deprecated, renamed: "noSpace")
+  @available(*, unavailable, renamed: "noSpace")
   public static var ENOSPC: Errno { noSpace }
 
   /// ESPIPE: Illegal seek.
@@ -284,7 +284,7 @@ public struct Errno: RawRepresentable, Error {
   /// An lseek function was issued on a socket, pipe or FIFO.
   public static var illegalSeek: Errno { Errno(_ESPIPE) }
 
-  @available(*, deprecated, renamed: "illegalSeek")
+  @available(*, unavailable, renamed: "illegalSeek")
   public static var ESPIPE: Errno { illegalSeek }
 
   /// EROFS: Read-only file system.
@@ -293,7 +293,7 @@ public struct Errno: RawRepresentable, Error {
   /// that was read-only at the time.
   public static var readOnlyFileSystem: Errno { Errno(_EROFS) }
 
-  @available(*, deprecated, renamed: "readOnlyFileSystem")
+  @available(*, unavailable, renamed: "readOnlyFileSystem")
   public static var EROFS: Errno { readOnlyFileSystem }
 
   /// EMLINK: Too many links.
@@ -302,7 +302,7 @@ public struct Errno: RawRepresentable, Error {
   /// 32767 hard links per file).
   public static var tooManyLinks: Errno { Errno(_EMLINK) }
 
-  @available(*, deprecated, renamed: "tooManyLinks")
+  @available(*, unavailable, renamed: "tooManyLinks")
   public static var EMLINK: Errno { tooManyLinks }
 
   /// EPIPE: Broken pipe.
@@ -311,7 +311,7 @@ public struct Errno: RawRepresentable, Error {
   /// data.
   public static var brokenPipe: Errno { Errno(_EPIPE) }
 
-  @available(*, deprecated, renamed: "brokenPipe")
+  @available(*, unavailable, renamed: "brokenPipe")
   public static var EPIPE: Errno { brokenPipe }
 
   /// EDOM: Numerical argument out of domain.
@@ -320,7 +320,7 @@ public struct Errno: RawRepresentable, Error {
   /// mathematical function.
   public static var outOfDomain: Errno { Errno(_EDOM) }
 
-  @available(*, deprecated, renamed: "outOfDomain")
+  @available(*, unavailable, renamed: "outOfDomain")
   public static var EDOM: Errno { outOfDomain }
 
   /// ERANGE: Numerical result out of range.
@@ -329,7 +329,7 @@ public struct Errno: RawRepresentable, Error {
   /// space (perhaps exceeded precision).
   public static var outOfRange: Errno { Errno(_ERANGE) }
 
-  @available(*, deprecated, renamed: "outOfRange")
+  @available(*, unavailable, renamed: "outOfRange")
   public static var ERANGE: Errno { outOfRange }
 
   /// EAGAIN: Resource temporarily unavailable.
@@ -338,7 +338,7 @@ public struct Errno: RawRepresentable, Error {
   /// complete normally.
   public static var resourceTemporarilyUnavailable: Errno { Errno(_EAGAIN) }
 
-  @available(*, deprecated, renamed: "resourceTemporarilyUnavailable")
+  @available(*, unavailable, renamed: "resourceTemporarilyUnavailable")
   public static var EAGAIN: Errno { resourceTemporarilyUnavailable }
 
   /// EINPROGRESS: Operation now in progress.
@@ -347,7 +347,7 @@ public struct Errno: RawRepresentable, Error {
   /// connectx(2)) was attempted on a non-blocking object (see fcntl(2)).
   public static var nowInProcess: Errno { Errno(_EINPROGRESS) }
 
-  @available(*, deprecated, renamed: "nowInProcess")
+  @available(*, unavailable, renamed: "nowInProcess")
   public static var EINPROGRESS: Errno { nowInProcess }
 
   /// EALREADY: Operation already in progress.
@@ -356,7 +356,7 @@ public struct Errno: RawRepresentable, Error {
   /// operation in progress.
   public static var alreadyInProcess: Errno { Errno(_EALREADY) }
 
-  @available(*, deprecated, renamed: "alreadyInProcess")
+  @available(*, unavailable, renamed: "alreadyInProcess")
   public static var EALREADY: Errno { alreadyInProcess }
 
   /// ENOTSOCK: Socket operation on non-socket.
@@ -364,7 +364,7 @@ public struct Errno: RawRepresentable, Error {
   /// Self-explanatory.
   public static var notSocket: Errno { Errno(_ENOTSOCK) }
 
-  @available(*, deprecated, renamed: "notSocket")
+  @available(*, unavailable, renamed: "notSocket")
   public static var ENOTSOCK: Errno { notSocket }
 
   /// EDESTADDRREQ: Destination address required.
@@ -372,7 +372,7 @@ public struct Errno: RawRepresentable, Error {
   /// A required address was omitted from an operation on a socket.
   public static var addressRequired: Errno { Errno(_EDESTADDRREQ) }
 
-  @available(*, deprecated, renamed: "addressRequired")
+  @available(*, unavailable, renamed: "addressRequired")
   public static var EDESTADDRREQ: Errno { addressRequired }
 
   /// EMSGSIZE: Message too long.
@@ -381,7 +381,7 @@ public struct Errno: RawRepresentable, Error {
   /// some other network limit.
   public static var messageTooLong: Errno { Errno(_EMSGSIZE) }
 
-  @available(*, deprecated, renamed: "messageTooLong")
+  @available(*, unavailable, renamed: "messageTooLong")
   public static var EMSGSIZE: Errno { messageTooLong }
 
   /// EPROTOTYPE: Protocol wrong type for socket.
@@ -391,7 +391,7 @@ public struct Errno: RawRepresentable, Error {
   /// with type SOCK_STREAM.
   public static var protocolWrongTypeForSocket: Errno { Errno(_EPROTOTYPE) }
 
-  @available(*, deprecated, renamed: "protocolWrongTypeForSocket")
+  @available(*, unavailable, renamed: "protocolWrongTypeForSocket")
   public static var EPROTOTYPE: Errno { protocolWrongTypeForSocket }
 
   /// ENOPROTOOPT: Protocol not available.
@@ -400,7 +400,7 @@ public struct Errno: RawRepresentable, Error {
   /// call.
   public static var protocolNotAvailable: Errno { Errno(_ENOPROTOOPT) }
 
-  @available(*, deprecated, renamed: "protocolNotAvailable")
+  @available(*, unavailable, renamed: "protocolNotAvailable")
   public static var ENOPROTOOPT: Errno { protocolNotAvailable }
 
   /// EPROTONOSUPPORT: Protocol not supported.
@@ -409,7 +409,7 @@ public struct Errno: RawRepresentable, Error {
   /// for it exists.
   public static var protocolNotSupported: Errno { Errno(_EPROTONOSUPPORT) }
 
-  @available(*, deprecated, renamed: "protocolNotSupported")
+  @available(*, unavailable, renamed: "protocolNotSupported")
   public static var EPROTONOSUPPORT: Errno { protocolNotSupported }
 
   /// ESOCKTNOSUPPORT: Socket type not supported.
@@ -418,7 +418,7 @@ public struct Errno: RawRepresentable, Error {
   /// no implementation for it exists.
   public static var socketTypeNotSupported: Errno { Errno(_ESOCKTNOSUPPORT) }
 
-  @available(*, deprecated, renamed: "socketTypeNotSupported")
+  @available(*, unavailable, renamed: "socketTypeNotSupported")
   public static var ESOCKTNOSUPPORT: Errno { socketTypeNotSupported }
 
   /// ENOTSUP: Not supported.
@@ -427,7 +427,7 @@ public struct Errno: RawRepresentable, Error {
   /// referenced.
   public static var notSupported: Errno { Errno(_ENOTSUP) }
 
-  @available(*, deprecated, renamed: "notSupported")
+  @available(*, unavailable, renamed: "notSupported")
   public static var ENOTSUP: Errno { notSupported }
 
   /// EPFNOSUPPORT: Protocol family not supported.
@@ -436,7 +436,7 @@ public struct Errno: RawRepresentable, Error {
   /// implementation for it exists.
   public static var protocolFamilyNotSupported: Errno { Errno(_EPFNOSUPPORT) }
 
-  @available(*, deprecated, renamed: "protocolFamilyNotSupported")
+  @available(*, unavailable, renamed: "protocolFamilyNotSupported")
   public static var EPFNOSUPPORT: Errno { protocolFamilyNotSupported }
 
   /// EAFNOSUPPORT: Address family not supported by protocol family.
@@ -446,7 +446,7 @@ public struct Errno: RawRepresentable, Error {
   /// Internet protocols.
   public static var addressFamilyNotSupported: Errno { Errno(_EAFNOSUPPORT) }
 
-  @available(*, deprecated, renamed: "addressFamilyNotSupported")
+  @available(*, unavailable, renamed: "addressFamilyNotSupported")
   public static var EAFNOSUPPORT: Errno { addressFamilyNotSupported }
 
   /// EADDRINUSE: Address already in use.
@@ -454,7 +454,7 @@ public struct Errno: RawRepresentable, Error {
   /// Only one usage of each address is normally permitted.
   public static var addressInUse: Errno { Errno(_EADDRINUSE) }
 
-  @available(*, deprecated, renamed: "addressInUse")
+  @available(*, unavailable, renamed: "addressInUse")
   public static var EADDRINUSE: Errno { addressInUse }
 
   /// EADDRNOTAVAIL: Cannot assign requested address.
@@ -463,7 +463,7 @@ public struct Errno: RawRepresentable, Error {
   /// this machine.
   public static var addressNotAvailable: Errno { Errno(_EADDRNOTAVAIL) }
 
-  @available(*, deprecated, renamed: "addressNotAvailable")
+  @available(*, unavailable, renamed: "addressNotAvailable")
   public static var EADDRNOTAVAIL: Errno { addressNotAvailable }
 
   /// ENETDOWN: Network is down.
@@ -471,7 +471,7 @@ public struct Errno: RawRepresentable, Error {
   /// A socket operation encountered a dead net- work.
   public static var networkDown: Errno { Errno(_ENETDOWN) }
 
-  @available(*, deprecated, renamed: "networkDown")
+  @available(*, unavailable, renamed: "networkDown")
   public static var ENETDOWN: Errno { networkDown }
 
   /// ENETUNREACH: Network is unreachable.
@@ -479,7 +479,7 @@ public struct Errno: RawRepresentable, Error {
   /// A socket operation was attempted to an unreachable network.
   public static var networkUnreachable: Errno { Errno(_ENETUNREACH) }
 
-  @available(*, deprecated, renamed: "networkUnreachable")
+  @available(*, unavailable, renamed: "networkUnreachable")
   public static var ENETUNREACH: Errno { networkUnreachable }
 
   /// ENETRESET: Network dropped connection on reset.
@@ -487,7 +487,7 @@ public struct Errno: RawRepresentable, Error {
   /// The host you were con- nected to crashed and rebooted.
   public static var networkReset: Errno { Errno(_ENETRESET) }
 
-  @available(*, deprecated, renamed: "networkReset")
+  @available(*, unavailable, renamed: "networkReset")
   public static var ENETRESET: Errno { networkReset }
 
   /// ECONNABORTED: Software caused connection abort.
@@ -495,7 +495,7 @@ public struct Errno: RawRepresentable, Error {
   /// A connection abort was caused internal to your host machine.
   public static var connectionAbort: Errno { Errno(_ECONNABORTED) }
 
-  @available(*, deprecated, renamed: "connectionAbort")
+  @available(*, unavailable, renamed: "connectionAbort")
   public static var ECONNABORTED: Errno { connectionAbort }
 
   /// ECONNRESET: Connection reset by peer.
@@ -504,7 +504,7 @@ public struct Errno: RawRepresentable, Error {
   /// loss of the connection on the remote socket due to a timeout or a reboot.
   public static var connectionReset: Errno { Errno(_ECONNRESET) }
 
-  @available(*, deprecated, renamed: "connectionReset")
+  @available(*, unavailable, renamed: "connectionReset")
   public static var ECONNRESET: Errno { connectionReset }
 
   /// ENOBUFS: No buffer space available.
@@ -513,7 +513,7 @@ public struct Errno: RawRepresentable, Error {
   /// lacked sufficient buffer space or because a queue was full.
   public static var noBufferSpace: Errno { Errno(_ENOBUFS) }
 
-  @available(*, deprecated, renamed: "noBufferSpace")
+  @available(*, unavailable, renamed: "noBufferSpace")
   public static var ENOBUFS: Errno { noBufferSpace }
 
   /// EISCONN: Socket is already connected.
@@ -523,7 +523,7 @@ public struct Errno: RawRepresentable, Error {
   /// when already connected.
   public static var socketIsConnected: Errno { Errno(_EISCONN) }
 
-  @available(*, deprecated, renamed: "socketIsConnected")
+  @available(*, unavailable, renamed: "socketIsConnected")
   public static var EISCONN: Errno { socketIsConnected }
 
   /// ENOTCONN: Socket is not connected.
@@ -533,7 +533,7 @@ public struct Errno: RawRepresentable, Error {
   /// supplied.
   public static var socketNotConnected: Errno { Errno(_ENOTCONN) }
 
-  @available(*, deprecated, renamed: "socketNotConnected")
+  @available(*, unavailable, renamed: "socketNotConnected")
   public static var ENOTCONN: Errno { socketNotConnected }
 
   /// ESHUTDOWN: Cannot send after socket shutdown.
@@ -542,7 +542,7 @@ public struct Errno: RawRepresentable, Error {
   /// shut down with a previous shutdown(2) call.
   public static var socketShutdown: Errno { Errno(_ESHUTDOWN) }
 
-  @available(*, deprecated, renamed: "socketShutdown")
+  @available(*, unavailable, renamed: "socketShutdown")
   public static var ESHUTDOWN: Errno { socketShutdown }
 
   /// ETIMEDOUT: Operation timed out.
@@ -552,7 +552,7 @@ public struct Errno: RawRepresentable, Error {
   /// dependent on the commu- nication protocol.)
   public static var timedOut: Errno { Errno(_ETIMEDOUT) }
 
-  @available(*, deprecated, renamed: "timedOut")
+  @available(*, unavailable, renamed: "timedOut")
   public static var ETIMEDOUT: Errno { timedOut }
 
   /// ECONNREFUSED: Connection refused.
@@ -562,7 +562,7 @@ public struct Errno: RawRepresentable, Error {
   /// on the for- eign host.
   public static var connectionRefused: Errno { Errno(_ECONNREFUSED) }
 
-  @available(*, deprecated, renamed: "connectionRefused")
+  @available(*, unavailable, renamed: "connectionRefused")
   public static var ECONNREFUSED: Errno { connectionRefused }
 
   /// ELOOP: Too many levels of symbolic links.
@@ -570,7 +570,7 @@ public struct Errno: RawRepresentable, Error {
   /// A path name lookup involved more than 8 symbolic links.
   public static var tooManySymbolicLinkLevels: Errno { Errno(_ELOOP) }
 
-  @available(*, deprecated, renamed: "tooManySymbolicLinkLevels")
+  @available(*, unavailable, renamed: "tooManySymbolicLinkLevels")
   public static var ELOOP: Errno { tooManySymbolicLinkLevels }
 
   /// ENAMETOOLONG: File name too long.
@@ -579,7 +579,7 @@ public struct Errno: RawRepresentable, Error {
   /// entire path name exceeded 1023 (MAXPATHLEN-1) characters.
   public static var fileNameTooLong: Errno { Errno(_ENAMETOOLONG) }
 
-  @available(*, deprecated, renamed: "fileNameTooLong")
+  @available(*, unavailable, renamed: "fileNameTooLong")
   public static var ENAMETOOLONG: Errno { fileNameTooLong }
 
   /// EHOSTDOWN: Host is down.
@@ -587,7 +587,7 @@ public struct Errno: RawRepresentable, Error {
   /// A socket operation failed because the desti- nation host was down.
   public static var hostIsDown: Errno { Errno(_EHOSTDOWN) }
 
-  @available(*, deprecated, renamed: "hostIsDown")
+  @available(*, unavailable, renamed: "hostIsDown")
   public static var EHOSTDOWN: Errno { hostIsDown }
 
   /// EHOSTUNREACH: No route to host.
@@ -595,7 +595,7 @@ public struct Errno: RawRepresentable, Error {
   /// A socket operation was attempted to an unreachable host.
   public static var noRouteToHost: Errno { Errno(_EHOSTUNREACH) }
 
-  @available(*, deprecated, renamed: "noRouteToHost")
+  @available(*, unavailable, renamed: "noRouteToHost")
   public static var EHOSTUNREACH: Errno { noRouteToHost }
 
   /// ENOTEMPTY: Directory not empty.
@@ -604,7 +604,7 @@ public struct Errno: RawRepresentable, Error {
   /// directory or rename call.
   public static var directoyNotEmpty: Errno { Errno(_ENOTEMPTY) }
 
-  @available(*, deprecated, renamed: "directoyNotEmpty")
+  @available(*, unavailable, renamed: "directoyNotEmpty")
   public static var ENOTEMPTY: Errno { directoyNotEmpty }
 
   /// EPROCLIM: Too many processes.
@@ -616,7 +616,7 @@ public struct Errno: RawRepresentable, Error {
   /// The quota system ran out of table entries.
   public static var tooManyUsers: Errno { Errno(_EUSERS) }
 
-  @available(*, deprecated, renamed: "tooManyUsers")
+  @available(*, unavailable, renamed: "tooManyUsers")
   public static var EUSERS: Errno { tooManyUsers }
 
   /// EDQUOT: Disc quota exceeded.
@@ -627,7 +627,7 @@ public struct Errno: RawRepresentable, Error {
   /// created file failed because the user's quota of inodes was exhausted.
   public static var diskQuotaExceeded: Errno { Errno(_EDQUOT) }
 
-  @available(*, deprecated, renamed: "diskQuotaExceeded")
+  @available(*, unavailable, renamed: "diskQuotaExceeded")
   public static var EDQUOT: Errno { diskQuotaExceeded }
 
   /// ESTALE: Stale NFS file handle.
@@ -638,7 +638,7 @@ public struct Errno: RawRepresentable, Error {
   /// occurred.
   public static var staleNFSFileHandle: Errno { Errno(_ESTALE) }
 
-  @available(*, deprecated, renamed: "staleNFSFileHandle")
+  @available(*, unavailable, renamed: "staleNFSFileHandle")
   public static var ESTALE: Errno { staleNFSFileHandle }
 
   /// EBADRPC: RPC struct is bad.
@@ -646,7 +646,7 @@ public struct Errno: RawRepresentable, Error {
   /// Exchange of RPC information was unsuccess- ful.
   public static var rpcUnsuccessful: Errno { Errno(_EBADRPC) }
 
-  @available(*, deprecated, renamed: "rpcUnsuccessful")
+  @available(*, unavailable, renamed: "rpcUnsuccessful")
   public static var EBADRPC: Errno { rpcUnsuccessful }
 
   /// ERPCMISMATCH: RPC version wrong.
@@ -655,7 +655,7 @@ public struct Errno: RawRepresentable, Error {
   /// version.
   public static var rpcVersionMismatch: Errno { Errno(_ERPCMISMATCH) }
 
-  @available(*, deprecated, renamed: "rpcVersionMismatch")
+  @available(*, unavailable, renamed: "rpcVersionMismatch")
   public static var ERPCMISMATCH: Errno { rpcVersionMismatch }
 
   /// EPROGUNAVAIL: RPC prog.
@@ -663,7 +663,7 @@ public struct Errno: RawRepresentable, Error {
   /// ot avail.  The requested program is not regis- tered on the remote host.
   public static var rpcProgramUnavailable: Errno { Errno(_EPROGUNAVAIL) }
 
-  @available(*, deprecated, renamed: "rpcProgramUnavailable")
+  @available(*, unavailable, renamed: "rpcProgramUnavailable")
   public static var EPROGUNAVAIL: Errno { rpcProgramUnavailable }
 
   /// EPROGMISMATCH: Program version wrong.
@@ -672,7 +672,7 @@ public struct Errno: RawRepresentable, Error {
   /// (RPC).
   public static var rpcProgramVersionMismatch: Errno { Errno(_EPROGMISMATCH) }
 
-  @available(*, deprecated, renamed: "rpcProgramVersionMismatch")
+  @available(*, unavailable, renamed: "rpcProgramVersionMismatch")
   public static var EPROGMISMATCH: Errno { rpcProgramVersionMismatch }
 
   /// EPROCUNAVAIL: Bad procedure for program.
@@ -681,7 +681,7 @@ public struct Errno: RawRepresentable, Error {
   /// program.
   public static var rpcProcedureUnavailable: Errno { Errno(_EPROCUNAVAIL) }
 
-  @available(*, deprecated, renamed: "rpcProcedureUnavailable")
+  @available(*, unavailable, renamed: "rpcProcedureUnavailable")
   public static var EPROCUNAVAIL: Errno { rpcProcedureUnavailable }
 
   /// ENOLCK: No locks available.
@@ -690,7 +690,7 @@ public struct Errno: RawRepresentable, Error {
   /// reached.
   public static var noLocks: Errno { Errno(_ENOLCK) }
 
-  @available(*, deprecated, renamed: "noLocks")
+  @available(*, unavailable, renamed: "noLocks")
   public static var ENOLCK: Errno { noLocks }
 
   /// ENOSYS: Function not implemented.
@@ -698,7 +698,7 @@ public struct Errno: RawRepresentable, Error {
   /// Attempted a system call that is not available on this system.
   public static var noFunction: Errno { Errno(_ENOSYS) }
 
-  @available(*, deprecated, renamed: "noFunction")
+  @available(*, unavailable, renamed: "noFunction")
   public static var ENOSYS: Errno { noFunction }
 
   /// EFTYPE: Inappropriate file type or format.
@@ -707,7 +707,7 @@ public struct Errno: RawRepresentable, Error {
   /// format.
   public static var badFileTypeOrFormat: Errno { Errno(_EFTYPE) }
 
-  @available(*, deprecated, renamed: "badFileTypeOrFormat")
+  @available(*, unavailable, renamed: "badFileTypeOrFormat")
   public static var EFTYPE: Errno { badFileTypeOrFormat }
 
   /// EAUTH: Authentication error.
@@ -716,7 +716,7 @@ public struct Errno: RawRepresentable, Error {
   /// system.
   public static var authenticationError: Errno { Errno(_EAUTH) }
 
-  @available(*, deprecated, renamed: "authenticationError")
+  @available(*, unavailable, renamed: "authenticationError")
   public static var EAUTH: Errno { authenticationError }
 
   /// ENEEDAUTH: Need authenticator.
@@ -725,7 +725,7 @@ public struct Errno: RawRepresentable, Error {
   /// may be mounted.
   public static var needAuthenticator: Errno { Errno(_ENEEDAUTH) }
 
-  @available(*, deprecated, renamed: "needAuthenticator")
+  @available(*, unavailable, renamed: "needAuthenticator")
   public static var ENEEDAUTH: Errno { needAuthenticator }
 
   /// EPWROFF: Device power is off.
@@ -733,7 +733,7 @@ public struct Errno: RawRepresentable, Error {
   /// The device power is off.
   public static var devicePowerIsOff: Errno { Errno(_EPWROFF) }
 
-  @available(*, deprecated, renamed: "devicePowerIsOff")
+  @available(*, unavailable, renamed: "devicePowerIsOff")
   public static var EPWROFF: Errno { devicePowerIsOff }
 
   /// EDEVERR: Device error.
@@ -741,7 +741,7 @@ public struct Errno: RawRepresentable, Error {
   /// A device error has occurred, e.g. a printer running out of paper.
   public static var deviceError: Errno { Errno(_EDEVERR) }
 
-  @available(*, deprecated, renamed: "deviceError")
+  @available(*, unavailable, renamed: "deviceError")
   public static var EDEVERR: Errno { deviceError }
 
   /// EOVERFLOW: Value too large to be stored in data type.
@@ -750,7 +750,7 @@ public struct Errno: RawRepresentable, Error {
   /// provided space.
   public static var overflow: Errno { Errno(_EOVERFLOW) }
 
-  @available(*, deprecated, renamed: "overflow")
+  @available(*, unavailable, renamed: "overflow")
   public static var EOVERFLOW: Errno { overflow }
 
   /// EBADEXEC: Bad executable (or shared library).
@@ -758,7 +758,7 @@ public struct Errno: RawRepresentable, Error {
   /// The executable or shared library being referenced was malformed.
   public static var badExecutable: Errno { Errno(_EBADEXEC) }
 
-  @available(*, deprecated, renamed: "badExecutable")
+  @available(*, unavailable, renamed: "badExecutable")
   public static var EBADEXEC: Errno { badExecutable }
 
   /// EBADARCH: Bad CPU type in executable.
@@ -766,7 +766,7 @@ public struct Errno: RawRepresentable, Error {
   /// The executable in question does not support the current CPU.
   public static var badCPUType: Errno { Errno(_EBADARCH) }
 
-  @available(*, deprecated, renamed: "badCPUType")
+  @available(*, unavailable, renamed: "badCPUType")
   public static var EBADARCH: Errno { badCPUType }
 
   /// ESHLIBVERS: Shared library version mismatch.
@@ -775,7 +775,7 @@ public struct Errno: RawRepresentable, Error {
   /// which was expected.
   public static var sharedLibraryVersionMismatch: Errno { Errno(_ESHLIBVERS) }
 
-  @available(*, deprecated, renamed: "sharedLibraryVersionMismatch")
+  @available(*, unavailable, renamed: "sharedLibraryVersionMismatch")
   public static var ESHLIBVERS: Errno { sharedLibraryVersionMismatch }
 
   /// EBADMACHO: Malformed Mach-o file.
@@ -783,7 +783,7 @@ public struct Errno: RawRepresentable, Error {
   /// The Mach object file is malformed.
   public static var malformedMachO: Errno { Errno(_EBADMACHO) }
 
-  @available(*, deprecated, renamed: "malformedMachO")
+  @available(*, unavailable, renamed: "malformedMachO")
   public static var EBADMACHO: Errno { malformedMachO }
 
   /// ECANCELED: Operation canceled.
@@ -791,7 +791,7 @@ public struct Errno: RawRepresentable, Error {
   /// The scheduled operation was canceled.
   public static var canceled: Errno { Errno(_ECANCELED) }
 
-  @available(*, deprecated, renamed: "canceled")
+  @available(*, unavailable, renamed: "canceled")
   public static var ECANCELED: Errno { canceled }
 
   /// EIDRM: Identifier removed.
@@ -799,7 +799,7 @@ public struct Errno: RawRepresentable, Error {
   /// An IPC identifier was removed while the current process was waiting on it.
   public static var identifierRemoved: Errno { Errno(_EIDRM) }
 
-  @available(*, deprecated, renamed: "identifierRemoved")
+  @available(*, unavailable, renamed: "identifierRemoved")
   public static var EIDRM: Errno { identifierRemoved }
 
   /// ENOMSG: No message of desired type.
@@ -808,7 +808,7 @@ public struct Errno: RawRepresentable, Error {
   /// message catalog does not contain the requested message.
   public static var noMessage: Errno { Errno(_ENOMSG) }
 
-  @available(*, deprecated, renamed: "noMessage")
+  @available(*, unavailable, renamed: "noMessage")
   public static var ENOMSG: Errno { noMessage }
 
   /// EILSEQ: Illegal byte sequence.
@@ -817,7 +817,7 @@ public struct Errno: RawRepresentable, Error {
   /// an incomplete sequence of bytes or the given wide character is invalid.
   public static var illegalByteSequence: Errno { Errno(_EILSEQ) }
 
-  @available(*, deprecated, renamed: "illegalByteSequence")
+  @available(*, unavailable, renamed: "illegalByteSequence")
   public static var EILSEQ: Errno { illegalByteSequence }
 
   /// ENOATTR: Attribute not found.
@@ -825,7 +825,7 @@ public struct Errno: RawRepresentable, Error {
   /// The specified extended attribute does not exist.
   public static var attributeNotFound: Errno { Errno(_ENOATTR) }
 
-  @available(*, deprecated, renamed: "attributeNotFound")
+  @available(*, unavailable, renamed: "attributeNotFound")
   public static var ENOATTR: Errno { attributeNotFound }
 
   /// EBADMSG: Bad message.
@@ -834,7 +834,7 @@ public struct Errno: RawRepresentable, Error {
   /// attempted.
   public static var badMessage: Errno { Errno(_EBADMSG) }
 
-  @available(*, deprecated, renamed: "badMessage")
+  @available(*, unavailable, renamed: "badMessage")
   public static var EBADMSG: Errno { badMessage }
 
   /// EMULTIHOP: Reserved.
@@ -842,7 +842,7 @@ public struct Errno: RawRepresentable, Error {
   /// This error is reserved for future use.
   public static var multiHop: Errno { Errno(_EMULTIHOP) }
 
-  @available(*, deprecated, renamed: "multiHop")
+  @available(*, unavailable, renamed: "multiHop")
   public static var EMULTIHOP: Errno { multiHop }
 
   /// ENODATA: No message available.
@@ -850,7 +850,7 @@ public struct Errno: RawRepresentable, Error {
   /// No message was available to be received by the requested operation.
   public static var noData: Errno { Errno(_ENODATA) }
 
-  @available(*, deprecated, renamed: "noData")
+  @available(*, unavailable, renamed: "noData")
   public static var ENODATA: Errno { noData }
 
   /// ENOLINK: Reserved.
@@ -858,7 +858,7 @@ public struct Errno: RawRepresentable, Error {
   /// This error is reserved for future use.
   public static var noLink: Errno { Errno(_ENOLINK) }
 
-  @available(*, deprecated, renamed: "noLink")
+  @available(*, unavailable, renamed: "noLink")
   public static var ENOLINK: Errno { noLink }
 
   /// ENOSR: No STREAM resources.
@@ -866,7 +866,7 @@ public struct Errno: RawRepresentable, Error {
   /// This error is reserved for future use.
   public static var noStreamResources: Errno { Errno(_ENOSR) }
 
-  @available(*, deprecated, renamed: "noStreamResources")
+  @available(*, unavailable, renamed: "noStreamResources")
   public static var ENOSR: Errno { noStreamResources }
 
   /// ENOSTR: Not a STREAM.
@@ -874,7 +874,7 @@ public struct Errno: RawRepresentable, Error {
   /// This error is reserved for future use.
   public static var notStream: Errno { Errno(_ENOSTR) }
 
-  @available(*, deprecated, renamed: "notStream")
+  @available(*, unavailable, renamed: "notStream")
   public static var ENOSTR: Errno { notStream }
 
   /// EPROTO: Protocol error.
@@ -883,7 +883,7 @@ public struct Errno: RawRepresentable, Error {
   /// generally not related to a hardware fail- ure.
   public static var protocolError: Errno { Errno(_EPROTO) }
 
-  @available(*, deprecated, renamed: "protocolError")
+  @available(*, unavailable, renamed: "protocolError")
   public static var EPROTO: Errno { protocolError }
 
   /// ETIME: STREAM ioctl() timeout.
@@ -891,7 +891,7 @@ public struct Errno: RawRepresentable, Error {
   /// This error is reserved for future use.
   public static var timeout: Errno { Errno(_ETIME) }
 
-  @available(*, deprecated, renamed: "timeout")
+  @available(*, unavailable, renamed: "timeout")
   public static var ETIME: Errno { timeout }
 
   /// EOPNOTSUPP: Operation not supported on socket.
@@ -901,7 +901,7 @@ public struct Errno: RawRepresentable, Error {
   /// socket.
   public static var notSupportedOnSocket: Errno { Errno(_EOPNOTSUPP) }
 
-  @available(*, deprecated, renamed: "notSupportedOnSocket")
+  @available(*, unavailable, renamed: "notSupportedOnSocket")
   public static var EOPNOTSUPP: Errno { notSupportedOnSocket }
 }
 

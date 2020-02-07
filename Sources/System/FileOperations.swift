@@ -3,6 +3,8 @@
 // the access of `errno`, then an arbitrary destructor could override `errno`. We need a way to
 // prevent that.
 
+// TODO: Retry on EINTR for everything except close.
+
 extension FileDescriptor {
   // TODO: Consider an open that is createIfDoesntExist with non-optional permissions
 
@@ -54,8 +56,9 @@ extension FileDescriptor {
 
   /// close: Delete a file descriptor
   ///
-  /// Deletes the file descriptor from the per-process object reference table. If this is the last reference to the
-  /// underlying object, the object will be deactivated.
+  /// Deletes the file descriptor from the per-process object reference table.
+  /// If this is the last reference to the underlying object, the object will
+  /// be deactivated.
   ///
   /// - Throws: `Errno`
   public func close() throws {
@@ -99,13 +102,15 @@ extension FileDescriptor {
     return Int64(newOffset)
   }
 
-  /// read: Read `buffer.count` bytes from the current read/write offset into `buffer`, and update the offset
+  /// read: Read `buffer.count` bytes from the current read/write offset into
+  /// `buffer`, and update the offset
   ///
   /// - Parameter buffer: The destination (and number of bytes) to read into
   /// - Throws: `Errno`
   /// - Returns: The number of bytes actually read
-  /// - Note: Reads from the position associated with this file descriptor, and increments that position
-  ///         by the number of bytes read. See `seek(offset:from:)`.
+  /// - Note: Reads from the position associated with this file descriptor, and
+  ///   increments that position by the number of bytes read.
+  ///   See `seek(offset:from:)`.
   public func read(into buffer: UnsafeMutableRawBufferPointer) throws -> Int {
     let numBytes = _read(self.rawValue, buffer.baseAddress, buffer.count)
     guard numBytes >= 0 else { throw Errno.current }
@@ -119,7 +124,8 @@ extension FileDescriptor {
   ///   - buffer: The destination (and number of bytes) to read into
   /// - Throws: `Errno`
   /// - Returns: The number of bytes actually read
-  /// - Note: Unlike `read(into:)`, this avoids accessing and modifying the position associated with this file descriptor
+  /// - Note: Unlike `read(into:)`, this avoids accessing and modifying the
+  ///   position associated with this file descriptor
   public func read(
     fromAbsoluteOffset offset: Int64, into buffer: UnsafeMutableRawBufferPointer
   ) throws -> Int {
@@ -128,13 +134,15 @@ extension FileDescriptor {
     return numBytes
   }
 
-  /// write: Write the contents of `buffer` to the current read/write offset, and update the offset
+  /// write: Write the contents of `buffer` to the current read/write offset,
+  /// and update the offset
   ///
   /// - Parameter buffer: The data to write
   /// - Throws: `Errno`
   /// - Returns: The number of bytes written
-  /// - Note: Writes to the position associated with this file descriptor, and increments that position
-  ///         by the number of bytes written. See `seek(offset:from:)`.
+  /// - Note: Writes to the position associated with this file descriptor, and
+  ///   increments that position by the number of bytes written.
+  ///   See `seek(offset:from:)`.
   public func write(
     _ buffer: UnsafeRawBufferPointer
   ) throws -> Int {
@@ -150,7 +158,8 @@ extension FileDescriptor {
   ///   - buffer: The data to write
   /// - Throws: `Errno`
   /// - Returns: The number of bytes actually written
-  /// - Note: Unlike `write(_:)`, this avoids accessing and modifying the position associated with this file descriptor
+  /// - Note: Unlike `write(_:)`, this avoids accessing and modifying the
+  /// position associated with this file descriptor
   public func write(
     toAbsoluteOffset offset: Int64, _ buffer: UnsafeRawBufferPointer
   ) throws -> Int {
