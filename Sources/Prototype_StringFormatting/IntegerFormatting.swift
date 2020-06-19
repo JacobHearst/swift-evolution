@@ -1,4 +1,4 @@
-public struct SeparatorFormatting: Equatable {
+public struct SeparatorFormatting: Hashable {
   public var separator: Character?
   public var spacing: Int
 
@@ -20,7 +20,7 @@ public struct SeparatorFormatting: Equatable {
   }
 }
 
-public struct IntegerFormatting: Equatable {
+public struct IntegerFormatting: Hashable {
   /// The base to use for the string representation. `radix` must be at least 2 and at most 36. The default is 10.
   public var radix: Int
 
@@ -263,7 +263,7 @@ extension IntegerFormatting {
 
     // IEEE: `-` The result of the conversion shall be left-justified within the field. The
     //       conversion is right-justified if this flag is not specified.
-    if align.anchor == CollectionBound.start {
+    if align.anchor == .start {
       specification += "-"
     }
 

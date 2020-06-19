@@ -31,55 +31,12 @@ public protocol SwiftyStringFormatting {
 
 }
 
-// Default argument values
-//
-// TODO: Should we do this on SwiftyStringFormatting or just on DefaultStringInterpolation?
-extension SwiftyStringFormatting {
-  public mutating func appendInterpolation<S: Sequence>(
-    _ s: S,
-    maxPrefixLength: Int = Int.max,
-    align: String.Alignment = .none
-  ) where S.Element: CustomStringConvertible {
-    appendInterpolation(s, maxPrefixLength: maxPrefixLength, align: align)
-  }
-
-  public mutating func appendInterpolation<I: FixedWidthInteger>(
-    _ value: I,
-    format: IntegerFormatting = .decimal(minDigits: 1),
-    align: String.Alignment = .none
-  ) {
-    appendInterpolation(value, format: format, align: align)
-  }
-
-  // %f, %F
-  public mutating func appendInterpolation<F: FloatingPoint>(
-    _ value: F,
-    explicitRadix: Bool = false,
-    precision: Int? = nil,
-    uppercase: Bool = false,
-    zeroFillFinite: Bool = false,
-    minDigits: Int = 1,
-    explicitPositiveSign: Character? = nil,
-    align: String.Alignment = .none
-  ) {
-    appendInterpolation(
-      value,
-      explicitRadix: explicitRadix,
-      precision: precision,
-      uppercase: uppercase,
-      zeroFillFinite: zeroFillFinite,
-      minDigits: minDigits,
-      explicitPositiveSign: explicitPositiveSign,
-      align: align)
-  }
-}
-
 extension DefaultStringInterpolation: SwiftyStringFormatting {
 
   public mutating func appendInterpolation<S: Sequence>(
     _ seq: S,
-    maxPrefixLength: Int,
-    align: String.Alignment
+    maxPrefixLength: Int = Int.max,
+    align: String.Alignment = .none
   ) where S.Element: CustomStringConvertible {
     var str = ""
     var iter = seq.makeIterator()
@@ -93,8 +50,8 @@ extension DefaultStringInterpolation: SwiftyStringFormatting {
 
   public mutating func appendInterpolation<I: FixedWidthInteger>(
     _ value: I,
-    format: IntegerFormatting,
-    align: String.Alignment
+    format: IntegerFormatting = .decimal(minDigits: 1),
+    align: String.Alignment = .none
   ) {
     appendInterpolation(format.format(value).aligned(align))
   }
@@ -103,14 +60,18 @@ extension DefaultStringInterpolation: SwiftyStringFormatting {
   // %f, %F
   public mutating func appendInterpolation<F: FloatingPoint>(
     _ value: F,
-    explicitRadix: Bool,
-    precision: Int?,
-    uppercase: Bool,
-    zeroFillFinite: Bool,
-    minDigits: Int,
-    explicitPositiveSign: Character?,
-    align: String.Alignment
+    explicitRadix: Bool = false,
+    precision: Int? = nil,
+    uppercase: Bool = false,
+    zeroFillFinite: Bool = false,
+    minDigits: Int = 1,
+    explicitPositiveSign: Character? = nil,
+    align: String.Alignment = .none
   ) {
+    
+    // TODO: body should be extracted into a format method, can be invoked
+    // outside of interpolation context
+    
     let valueStr: String
     if value.isNaN {
       valueStr = uppercase ? "NAN" : "nan"

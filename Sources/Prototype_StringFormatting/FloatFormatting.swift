@@ -1,4 +1,4 @@
-public struct FloatFormatting: Equatable {
+public struct FloatFormatting: Hashable {
   // NOTE: fprintf will read from C locale. Swift print uses dot.
   // We could consider a global var for the c locale's character.
   // OSLog will likely end up just getting C locale behavior, which
@@ -13,7 +13,7 @@ public struct FloatFormatting: Equatable {
   // fprintf (%a always prints a prefix, %efg don't need one), so why
   // introduce it here.
 
-  public enum Notation: Equatable {
+  public enum Notation: Hashable {
     /// Swift's String(floating-point) formatting.
     case decimal
     
@@ -144,7 +144,7 @@ extension FloatFormatting {
     
     // IEEE: `-` The result of the conversion shall be left-justified within the field. The
     //       conversion is right-justified if this flag is not specified.
-    if align.anchor == CollectionBound.start {
+    if align.anchor == .start {
       specification += "-"
     }
     

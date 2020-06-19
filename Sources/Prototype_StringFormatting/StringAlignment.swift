@@ -1,9 +1,17 @@
 extension String {
-  public struct Alignment {
+  public struct Alignment: Hashable {
+
+    public enum Bound: Comparable, Hashable {
+      case start
+      case end
+
+      internal var inverted: CollectionBound { self == .start ? .end : .start }
+    }
+
     // TODO: max length?
 
     public var minimumColumnWidth: Int
-    public var anchor: CollectionBound
+    public var anchor: Bound
     public var fill: Character
 
     // FIXME: What about full-width and wide characters?
@@ -11,7 +19,7 @@ extension String {
 
     public init(
       minimumColumnWidth: Int = 0,
-      anchor: CollectionBound = .end,
+      anchor: Bound = .end,
       fill: Character = " "
     ) {
       self.minimumColumnWidth = minimumColumnWidth

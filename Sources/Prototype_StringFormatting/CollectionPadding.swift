@@ -32,16 +32,16 @@
 // to be...
 
 @frozen
-public enum CollectionBound {
+internal enum CollectionBound {
   case start
   case end
 }
 extension CollectionBound {
-  public var inverted: CollectionBound { self == .start ? .end : .start }
+  internal var inverted: CollectionBound { self == .start ? .end : .start }
 }
 
 extension RangeReplaceableCollection {
-  public mutating func pad(
+  internal mutating func pad(
     to newCount: Int, using fill: Self.Element, at bound: CollectionBound = .end
   ) {
     guard newCount > 0 else { return }
@@ -69,13 +69,13 @@ extension RangeReplaceableCollection {
   // TODO: Needs a new replaceSubrange hook that returns the new range for efficiency
   // pitch the customization hook on its own, default behavior does the count thing
   //
-  public mutating func intersperse(
+  internal mutating func intersperse(
     _ newElement: Element, every n: Int, startingFrom bound: CollectionBound
   ) {
     self.intersperse(contentsOf: CollectionOfOne(newElement), every: n, startingFrom: bound)
   }
 
-  public mutating func intersperse<C: Collection>(
+  internal mutating func intersperse<C: Collection>(
     contentsOf newElements : C, every n: Int, startingFrom bound: CollectionBound
   ) where C.Element == Element {
     precondition(n > 0)
