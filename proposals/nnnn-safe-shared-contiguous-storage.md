@@ -201,12 +201,6 @@ extension UnsafeMutableRawBufferPointer: ContiguousStorage<UInt8> {
 }
 ```
 
-**TODO**: What is the `@_unsafeNonescapableResult` annotation? Would `Slice<UnsafeBufferPointer<UInt8>>` need it?
-
-**TODO**: Do we do a `Sequence.withSpanIfAvailable` API?
-
-**TODO**: What all can we deprecate with this proposal?
-
 **TODO**: Do these needs lifetime annotations on them?
 
 #### Using `Span` with C functions or other unsafe code:
@@ -804,6 +798,118 @@ A `RawSpan` can be viewed as a `Span<T>`, provided the memory is laid out homoge
 }
 ```
 
+### Byte parsing helpers
+
+The below (severable) API make `RawSpan` well-suited for use in binary parsers and decoders.
+
+
+#### Out of bounds errors
+
+(TODO: link swift error handling rationale)
+
+The stdlib's lowest level (safe) interfaces, direct indexing, trap on error ([Logic failures](https://github.com/apple/swift/blob/main/docs/ErrorHandlingRationale.md#logic-failures)). Some operations, such as the key-based subcript on `Dictionary`, are expected to fail often and have no useful information to communicate other than to return `nil` ([Simple domain errors](https://github.com/apple/swift/blob/main/docs/ErrorHandlingRationale.md#simple-domain-errors)). 
+
+Data parsing is generally expected to succeed, but when it doesn't we want an error that we can propagate upwards with enough information in that we can try to recover ([Recoverable errors](https://github.com/apple/swift/blob/main/docs/ErrorHandlingRationale.md#recoverable-errors)). For example, if our data is provided in chunks of contiguous memory, we might be able to recover by buffering more bytes and trying again.
+
+
+```swift
+/// An error indicating that out-of-bounds access was attempted
+@frozen
+public struct OutOfBoundsError: Error {
+  /// The number of elements expected
+  public var expected: Int
+
+  /// The number of elements found
+  public var has: Int
+
+  @inlinable
+  public init(expected: Int, has: Int)
+}
+```
+
+#### Index-advancing operations
+
+The following parsing primitives 
+
+(most general/powerful, but they require developer to manage indices)
+
+```swift
+extension RawSpan {
+  /// Parse an instance of `T`, advancing `position`.
+  @inlinable
+  public func parse<T: _BitwiseCopyable>(
+    _ position: inout Index, as t: T.Type = T.self
+  ) throws(OutOfBoundsError) -> T
+
+  /// Parse `numBytes` of data, advancing `position`.
+  @inlinable
+  public func parse(
+    _ position: inout Index, numBytes: some FixedWidthInteger
+  ) throws (OutOfBoundsError) -> Self
+}
+```
+
+However, they do require that a developer manage indices.
+
+#### Cursor-mutating operations
+
+`Cursor` provides a more convenient interface to the index-advancing primitives by encapsulating the current position as well as subrange within the input in which to operate.
+
+When parsing data, there are often multiple subranges of the data that we are parsing within. For example, when parsing an entire file, we might treat each line as a separate record, and we might individually parse different fields in each line. Knowing whether we are at the start or end of the file requires checking the file's original bounds and knowing whether we are at the start of a line requires either knowing the line's bounds or peeking-behind the record's current parse range for a newline character.
+
+`Cursor` stores and manages a parsing subrange, which alleviates the developer from managing one layer of slicing.
+
+*Alternative*: If `Cursor` does not store the subrange, it would be 3 words in size rather than 5 words. The developer would have to pre-slice and manage the slice, and future API on cursor could not peek outside of the subrange's bounds (e.g. checking for start-of-line).
+
+
+```swift
+extension RawSpan {
+  @frozen
+  public struct Cursor: Copyable, ~Escapable {
+    public let base: RawSpan
+
+    /// The range within which we parse
+    public let parseRange: Range<RawSpan.Index>
+
+    /// The current parsing position
+    public var position: RawSpan.Index
+
+    @inlinable
+    public init(_ base: RawSpan, in range: Range<RawSpan.Index>)
+
+    @inlinable
+    public init(_ base: RawSpan)
+
+    /// Parse an instance of `T` and advance
+    @inlinable
+    public mutating func parse<T: _BitwiseCopyable>(
+      _ t: T.Type = T.self
+    ) throws(OutOfBoundsError) -> T
+
+    /// Parse `numBytes`and advance
+    @inlinable
+    public mutating func parse(
+      numBytes: some FixedWidthInteger
+    ) throws (OutOfBoundsError) -> RawSpan
+
+    /// The bytes that we've parsed so far
+    @inlinable
+    public var parsedBytes: RawSpan { get }
+
+    /// The number of bytes left to parse
+    @inlinable
+    public var remainingBytes: Int { get }
+  }
+
+  @inlinable
+  public func makeCursor() -> Cursor
+
+  @inlinable
+  public func makeCursor(in range: Range<Index>) -> Cursor
+}
+```
+
+
 ## Source compatibility
 
 This proposal is additive and source-compatible with existing code.
@@ -877,6 +983,9 @@ while let elt = iter.next() {
 
 Non-copyable and non-escapable containers would benefit from a `Collection`-like protocol family to represent a set basic, common operations. This may be `Collection` if we find a way to make it work; it may be something else.
 
+Alongside this work, it may make sense to add a `Span` alternative to `withContiguousStorageIfAvailable()`, `RawSpan` alternative to `withUnsafeBytes`, etc., and seek to deprecate any closure-based API around unsafe pointers.
+
+
 ##### Sharing piecewise-contiguous memory
 
 Some types store their internal representation in a piecewise-contiguous manner, such as trees and ropes. Some operations naturally return information in a piecewise-contiguous manner, such as network operations. These could supply results by iterating through a list of contiguous chunks of memory.
@@ -938,6 +1047,9 @@ This would probably consist of a new type of custom conversion in the language. 
 
 ##### Interopability with C++'s `std::span` and with llvm's `-fbounds-safety`
 The [`std::span`](https://en.cppreference.com/w/cpp/container/span) class template from the C++ standard library is a similar representation of a contiguous range of memory. LLVM may soon have a [bounds-checking mode](https://discourse.llvm.org/t/70854) for C. These are an opportunity for better, safer interoperation with a type such as `Span`.
+
+
+
 
 ## Acknowledgments
 
