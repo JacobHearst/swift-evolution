@@ -805,8 +805,6 @@ The below (severable) API make `RawSpan` well-suited for use in binary parsers a
 
 #### Out of bounds errors
 
-(TODO: link swift error handling rationale)
-
 The stdlib's lowest level (safe) interfaces, direct indexing, trap on error ([Logic failures](https://github.com/apple/swift/blob/main/docs/ErrorHandlingRationale.md#logic-failures)). Some operations, such as the key-based subcript on `Dictionary`, are expected to fail often and have no useful information to communicate other than to return `nil` ([Simple domain errors](https://github.com/apple/swift/blob/main/docs/ErrorHandlingRationale.md#simple-domain-errors)). 
 
 Data parsing is generally expected to succeed, but when it doesn't we want an error that we can propagate upwards with enough information in that we can try to recover ([Recoverable errors](https://github.com/apple/swift/blob/main/docs/ErrorHandlingRationale.md#recoverable-errors)). For example, if our data is provided in chunks of contiguous memory, we might be able to recover by buffering more bytes and trying again.
