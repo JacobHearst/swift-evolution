@@ -43,7 +43,7 @@ We propose a non-escapable `UTF8Span` which exposes a similar API surface as `St
 @frozen
 public struct UTF8Span: Copyable, ~Escapable {
   @usableFromInline
-  internal var _start: RawSpan.Index
+  internal var _start: Index
 
   /*
    A bit-packed count and flags (such as isASCII)
@@ -116,16 +116,16 @@ extension UTF8Span {
 }
 ```
 
+### Views
+
 ...
 
 ```swift
 extension UTF8Span {
-  /// Returns whether the validated contents were all-ASCII. This is checked at
-  /// initialization time and remembered.
-  @inlinable
-  public var isASCII: Bool { get }
+  public typealias Index = RawSpan.Index
 }
 ```
+
 ...
 
 ```swift
@@ -134,12 +134,7 @@ extension UTF8Span {
 
   @inlinable
   public var codeUnits: CodeUnits { get }
-}
-```
-...
 
-```swift
-extension UTF8Span {
   @frozen
   public struct UnicodeScalarView: ~Escapable {
     public let span: UTF8Span
@@ -174,16 +169,19 @@ extension UTF8Span {
   public var utf16: UTF16View { _read }
 }
 ```
+
+##### Indexing Operations
+
 ...
 
 ```swift
 extension UTF8Span.UnicodeScalarView {
   @frozen
   public struct Index: Comparable, Hashable {
-    public var position: RawSpan.Index
+    public var position: UTF8Span.Index
 
     @inlinable
-    public init(_ position: RawSpan.Index)
+    public init(_ position: UTF8Span.Index)
 
     @inlinable
     public static func < (
@@ -200,7 +198,7 @@ extension UTF8Span.UnicodeScalarView {
 
     public let span: UTF8Span
 
-    public var position: RawSpan.Index
+    public var position: UTF8Span.Index
 
     @inlinable
     init(_ span: UTF8Span)
@@ -301,10 +299,10 @@ extension UTF8Span.UnicodeScalarView {
 extension UTF8Span.CharacterView {
   @frozen
   public struct Index: Comparable, Hashable {
-    public var position: RawSpan.Index
+    public var position: UTF8Span.Index
 
     @inlinable
-    public init(_ position: RawSpan.Index)
+    public init(_ position: UTF8Span.Index)
 
     @inlinable
     public static func < (
@@ -321,7 +319,7 @@ extension UTF8Span.CharacterView {
 
     public let span: UTF8Span
 
-    public var position: RawSpan.Index
+    public var position: UTF8Span.Index
 
     @inlinable
     init(_ span: UTF8Span)
@@ -426,7 +424,7 @@ extension UTF8Span.UTF16View {
     internal var _rawValue: UInt64
 
     @inlinable
-    public var position: RawSpan.Index { get }
+    public var position: UTF8Span.Index { get }
 
     /// Whether this index is referring to the second code unit of a non-BMP
     /// Unicode Scalar value.
@@ -434,7 +432,7 @@ extension UTF8Span.UTF16View {
     public var secondCodeUnit: Bool { get }
 
     @inlinable
-    public init(_ position: RawSpan.Index, secondCodeUnit: Bool)
+    public init(_ position: UTF8Span.Index, secondCodeUnit: Bool)
 
     @inlinable
     public static func < (
@@ -545,46 +543,36 @@ extension UTF8Span.UTF16View {
   @inlinable
   public func elementsEqual(_ other: Self) -> Bool
 
-  // NOTE: No Collection overload, since it's the same code as
-  // the sequence one.
-
   @inlinable
   public func elementsEqual(_ other: some Sequence<Element>) -> Bool
 }
-
 ```
-...
+
+### Queries
 
 ```swift
 extension UTF8Span {
+  /// Returns whether the validated contents were all-ASCII. This is checked at
+  /// initialization time and remembered.
   @inlinable
-  public func isScalarAligned(
-    _ i: RawSpan.Index
-  ) -> Bool
+  public var isASCII: Bool { get }
 
   @inlinable
-  public func isCharacterAligned(
-    _ i: RawSpan.Index
-  ) -> Bool
-}
-```
+  public func isScalarAligned(_ i: UTF8Span.Index) -> Bool
 
-...
+  @inlinable
+  public func isCharacterAligned(_ i: UTF8Span.Index) -> Bool
 
-```swift
-extension UTF8Span {
   /// Whether `self` is equivalent to `other` under Unicode Canonical Equivalance
-  public func isCanonicallyEquivalent(
-    to other: UTF8Span
-  ) -> Bool
+  public func isCanonicallyEquivalent(to other: UTF8Span) -> Bool
 
   /// Whether `self` orders less than `other` under Unicode Canonical Equivalance
   /// using normalized code-unit order
-  public func isCanonicallyLessThan(
-    _ other: UTF8Span
-  ) -> Bool
+  public func isCanonicallyLessThan(_ other: UTF8Span) -> Bool
 }
 ```
+
+### Additions to `String` and `RawSpan`
 
 ...
 
