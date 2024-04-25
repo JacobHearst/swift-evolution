@@ -907,6 +907,54 @@ extension RawSpan {
 }
 ```
 
+#### Example: Parsing PNG
+
+The below parses [PNG Chunks](https://www.w3.org/TR/png-3/#4Concepts.FormatChunks).
+
+```swift
+struct PNGChunk: ~Escapable {
+  let contents: RawSpan
+
+  public init<Owner: ~Copyable & ~Escapable>(
+    _ contents: RawStorageView, _ owner: borrowing Owner
+  ) -> dependsOn(owner) Self {
+    self.contents = contents
+    _validate()
+  }
+
+  var length: UInt32 {
+    contents.loadUnaligned(as: UInt32.self).bigEndian
+  }
+  var type: UInt32 {
+    contents.loadUnaligned(
+      fromUncheckedByteOffset: 4, as: UInt32.self).bigEndian
+  }
+  var data: RawStorageView {
+    contents[uncheckedOffsets: 8..<(contents.count-4)]
+  }
+  var crc: UInt32 {
+    contents.loadUnaligned(
+      fromUncheckedByteOffset: contents.count-4, as: UInt32.self
+    ).bigEndian
+  }
+}
+
+func parsePNGChunk<Owner: ~Copyable & ~Escapable>(
+  _ span: RawSpan,
+  _ owner: borrowing Owner
+) throws -> dependsOn(owner) RawPNGChunk_Span {
+  var cursor = span.makeCursor()
+
+  let length = try cursor.parse(UInt32.self).bigEndian
+  _ = try cursor.parse(UInt32.self).bigEndian   // type
+  _ = try cursor.parse(numBytes: length)        // data
+  _ = try cursor.parse(UInt32.self).bigEndian   // crc
+
+  return PNGChunk(cursor.parsedBytes, span)
+}
+```
+
+
 
 ## Source compatibility
 

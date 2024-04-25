@@ -107,12 +107,12 @@ extension UTF8Span {
   public init<Owner: ~Copyable & ~Escapable>(
     nulTerminatedCString: UnsafeRawPointer,
     owner: borrowing Owner
-  ) throws(DecodingError) -> dependsOn(owner) Self
+  ) throws(EncodingError) -> dependsOn(owner) Self
 
   public init<Owner: ~Copyable & ~Escapable>(
     nulTerminatedCString: UnsafePointer<CChar>,
     owner: borrowing Owner
-  ) throws(DecodingError) -> dependsOn(owner) Self
+  ) throws(EncodingError) -> dependsOn(owner) Self
 }
 ```
 
@@ -173,6 +173,10 @@ extension UTF8Span {
 ##### Indexing Operations
 
 ...
+
+`UTF8Span.UnicodeScalarView` corresponds to `String.UnicodeScalarView` for read-only purposes, however it is not `RangeReplaceable` as `UTF8Span` provides read-only access. Similarly, `UTF8Span.CharacterView` corresponds to `String`'s character view (i.e. its default view), `UTF8Span.UTF16View` to `String.UTF16View`, and `UTF8Span.CodeUnits` to `String.UTF8View`.
+
+
 
 ```swift
 extension UTF8Span.UnicodeScalarView {
