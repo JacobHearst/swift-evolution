@@ -13,11 +13,17 @@
 
 We introduce `UTF8Span` for efficient and safe Unicode processing over contiguous storage.
 
-Native `String`s are stored as validly-encoded UTF-8 bytes in a contiguous memory buffer. The standard library implements `String` functionality on top of this buffer, taking advantage of the validly-encoded invariant and specialized Unicode knowledge. We propose exposing this functionality as API for more advanced libraries and developers.
+Native `String`s are stored as validly-encoded UTF-8 bytes in an internal contiguous memory buffer. The standard library implements `String`'s API as internal methods which operate on top of this buffer, taking advantage of the validly-encoded invariant and specialized Unicode knowledge. We propose making this UTF-8 buffer and its methods public as API for more advanced libraries and developers.
 
 ## Motivation
 
-**TODO**
+Currently, if a developer wants to do `String`-like processing over UTF-8 bytes, they have to make an instance of `String`, which allocates a native storage class and copies all the bytes. The developer would then need to operate within the new `String`'s views and map between `String.Index` and byte offsets in the original buffer.
+
+For example, if these bytes were part of a data structure, the developer would need to decide to either cache such a new `String` instance or recreate it on the fly. Caching more than doubles the size and adds caching complexity. Recreating it on the fly adds a linear time factor and class instance allocation/deallocation.
+
+Furthermore, `String` may not be available on all embedded platforms due to the fact that it's conformance to `Comparable` and `Collection` depend on data tables bundled with the stdlib. `UTF8Span` is a more appropriate type for these platforms, and only some explicit API make use of data tables.
+
+
 
 ### UTF-8 validity and efficiency
 
@@ -28,8 +34,6 @@ Failure to guarantee UTF-8 encoding validity creates security and safety concern
 Additionally, a particular scalar value in valid UTF-8 has only one encoding, but invalid UTF-8 could have the same value encoded as an [overlong encoding](https://en.wikipedia.org/wiki/UTF-8#Overlong_encodings), which would compromise code that checks for the presence of a scalar value by looking at the encoded bytes (or that does a byte-wise comparison).
 
 
-
-
 ## Proposed solution
 
 We propose a non-escapable `UTF8Span` which exposes a similar API surface as `String` for validly-encoded UTF-8 code units in contiguous memory.
@@ -37,7 +41,7 @@ We propose a non-escapable `UTF8Span` which exposes a similar API surface as `St
 
 ## Detailed design
 
-...
+`UTF8Span` is a borrowed view into contiguous memory containing validly-encoded UTF-8 code units.
 
 ```swift
 @frozen
@@ -67,10 +71,11 @@ public struct UTF8Span: Copyable, ~Escapable {
 
 ### Creation and validation
 
-...
+`UTF8Span` is validated at initialization time, and encoding errors are diagnosed and thrown.
 
 ```swift
 extension Unicode.UTF8 {
+  /// The kind of encoding error encountered during validation
   @frozen
   public struct EncodingErrorKind: Error, Sendable, Hashable, Codable {
     public var rawValue: UInt8
@@ -78,25 +83,29 @@ extension Unicode.UTF8 {
     @inlinable
     public init(rawValue: UInt8)
 
-    @inlinable
+    @_alwaysEmitIntoClient
     public static var unexpectedContinuationByte: Self { get }
 
-    @inlinable
+    @_alwaysEmitIntoClient
     public static var overlongEncoding: Self { get }
 
-    // TODO: ...
+    @_alwaysEmitIntoClient
+    public static var invalidCodePoint: Self { get }
   }
 }
-
 ```
 
-...
+**TODO**: Check all the kinds of errors we'd like to diagnose. Since this is a `RawRepresentable` struct, we can still extend it with a (finite) number of error kinds in the future.
 
 ```swift
 extension UTF8Span {
+  /// The kind and location of invalidly-encoded UTF-8 bytes
   @frozen
   public struct EncodingError: Error, Sendable, Hashable, Codable {
+    /// The kind of encoding error
     public var kind: Unicode.UTF8.EncodingErrorKind
+
+    /// The range of offsets into our input containing the error
     public var range: Range<Int>
   }
 
@@ -116,17 +125,13 @@ extension UTF8Span {
 }
 ```
 
+**TODO**: Should `EncodingError.range` be a range of span indices instead, and we only have a span-based init? Should it be generic over the index type? Should it be inside of `Unicode.UTF8` instead?
+
 ### Views
 
-...
+Similarly to `String`, `UTF8Span` exposes different ways to view the UTF-8 contents.
 
-```swift
-extension UTF8Span {
-  public typealias Index = RawSpan.Index
-}
-```
-
-...
+`UTF8Span.UnicodeScalarView` corresponds to `String.UnicodeScalarView` for read-only purposes, however it is not `RangeReplaceable` as `UTF8Span` provides read-only access. Similarly, `UTF8Span.CharacterView` corresponds to `String`'s character view (i.e. its default view), `UTF8Span.UTF16View` to `String.UTF16View`, and `UTF8Span.CodeUnits` to `String.UTF8View`.
 
 ```swift
 extension UTF8Span {
@@ -170,15 +175,18 @@ extension UTF8Span {
 }
 ```
 
-##### Indexing Operations
+**TOOD**: `_read` vs `get`? `@inlinable` vs `@_alwaysEmitIntoClient`?
 
-...
+##### `Collection`-like API:
 
-`UTF8Span.UnicodeScalarView` corresponds to `String.UnicodeScalarView` for read-only purposes, however it is not `RangeReplaceable` as `UTF8Span` provides read-only access. Similarly, `UTF8Span.CharacterView` corresponds to `String`'s character view (i.e. its default view), `UTF8Span.UTF16View` to `String.UTF16View`, and `UTF8Span.CodeUnits` to `String.UTF8View`.
-
+Like `Span`, `UTF8Span` provides index and `Collection`-like API:
 
 
 ```swift
+extension UTF8Span {
+  public typealias Index = RawSpan.Index
+}
+
 extension UTF8Span.UnicodeScalarView {
   @frozen
   public struct Index: Comparable, Hashable {
@@ -561,9 +569,11 @@ extension UTF8Span {
   @inlinable
   public var isASCII: Bool { get }
 
+  /// Whether `i` is on a boundary between Unicode scalar values
   @inlinable
   public func isScalarAligned(_ i: UTF8Span.Index) -> Bool
 
+  /// Whether `i` is on a boundary between `Character`s, i.e. extended grapheme clusters.
   @inlinable
   public func isCharacterAligned(_ i: UTF8Span.Index) -> Bool
 
@@ -578,23 +588,33 @@ extension UTF8Span {
 
 ### Additions to `String` and `RawSpan`
 
-...
+We extend `String` with the ability to access its backing `UTF8Span`:
 
 ```swift
 extension String {
+  // TODO: note that a copy may happen if `String` is not native...
   public var utf8Span: UTF8Span {
-    // TODO: how to do this well...
+    // TODO: how to do this well, considering we also have small 
+    //       strings
   }
 }
 ```
 
-...
+**TODO**: `Substring` too?
+
+**TODO**: Should we deprecate `withUTF8` at the same time?
+
+Additionally, we extend `RawSpan`'s byte parsing support with helpers for parsing validly-encoded UTF-8.
 
 ```swift
 extension RawSpan {
-  public func parseUTF8(length: Int) throws -> UTF8Span
+  public func parseUTF8(
+    _ position: inout Index, length: Int
+  ) throws -> UTF8Span
 
-  public func parseNullTermiantedUTF8() throws -> UTF8Span
+  public func parseNullTermiantedUTF8(
+    _ position: inout Index
+  ) throws -> UTF8Span
 }
 
 extension RawSpan.Cursor {
@@ -621,12 +641,12 @@ The additions described in this proposal require a new version of the standard l
 
 ### More alignments
 
-... word alignment, line alignment
+**TODO**: word alignment, line alignment, ...
 
 
 ### Normalization
 
-... mutating normalize, `isNormal(quickCheck: Bool)`, ...
+**TODO**: mutating normalize, `isNormal(quickCheck: Bool)`, ...
 
 ### Transcoded views, normalized views, case-folded views, etc
 
@@ -650,7 +670,7 @@ extension UTF8Span {
 }
 ```
 
-Note that since UTF-16 has such historical significance that even with a fully-generic transcoded view, we'd likely want a dedicated, specialized type for UTF-16.
+Note: UTF-16 has such historical significance that, even with a fully-generic transcoded view, we'd still want a dedicated, specialized type for UTF-16.
 
 We could similarly provide lazily-normalized views of code units or scalars under NFC or NFD (which the stdlib already distributes data tables for), possibly generic via a protocol for 3rd party normal forms.
 
@@ -698,7 +718,7 @@ For the purposes of this pitch, we're not looking to expand the scope of functio
 
 ## Alternatives considered
 
-...
+**TODO**
 
 ## Acknowledgments
 

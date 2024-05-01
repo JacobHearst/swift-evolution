@@ -917,9 +917,9 @@ struct PNGChunk: ~Escapable {
 
   public init<Owner: ~Copyable & ~Escapable>(
     _ contents: RawStorageView, _ owner: borrowing Owner
-  ) -> dependsOn(owner) Self {
+  ) throws (PNGValidationError) -> dependsOn(owner) Self {
     self.contents = contents
-    _validate()
+    try self._validate()
   }
 
   var length: UInt32 {
@@ -946,11 +946,11 @@ func parsePNGChunk<Owner: ~Copyable & ~Escapable>(
   var cursor = span.makeCursor()
 
   let length = try cursor.parse(UInt32.self).bigEndian
-  _ = try cursor.parse(UInt32.self).bigEndian   // type
+  _ = try cursor.parse(UInt32.self)             // type
   _ = try cursor.parse(numBytes: length)        // data
-  _ = try cursor.parse(UInt32.self).bigEndian   // crc
+  _ = try cursor.parse(UInt32.self)             // crc
 
-  return PNGChunk(cursor.parsedBytes, span)
+  return PNGChunk(cursor.parsedBytes, owner)
 }
 ```
 
