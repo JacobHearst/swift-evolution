@@ -48,21 +48,35 @@ let regex = /(?<=a)b/
 With this proposal, this restriction is lifted and the following syntactic forms will be accepted:
 
 ```swift
-// Positive lookabehind
+// Positive lookbehind
 /a(?<=b)c/
 /a(*plb:b)c/
 /a(*positive_lookbehind:b)c/
 
-// Negative lookabehind
+// Negative lookbehind
 /a(?<!b)c/
 /a(*nlb:b)c/
 /a(*negative_lookbehind:b)c/
-
 ```
 
 ### Regex builders
+This proposal adds support for both positibe and negative lookbehind assertions when using the Regex builder, for example:
 
-**TODO**: add Regex builders for positive and negative lookbehind
+```swift
+// Positive Lookbehind
+Regex {
+  "a"
+  Lookbehind { "b" }
+  "c"
+}
+
+// Negative lookbehind
+Regex {
+  "a"
+  NegativeLookbehind { "b" }
+  "c"
+}
+```
 
 ### API
 
