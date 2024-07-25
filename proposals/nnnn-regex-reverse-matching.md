@@ -60,7 +60,7 @@ With this proposal, this restriction is lifted and the following syntactic forms
 ```
 
 ### Regex builders
-This proposal adds support for both positibe and negative lookbehind assertions when using the Regex builder, for example:
+This proposal adds support for both positive and negative lookbehind assertions when using the Regex builder, for example:
 
 ```swift
 // Positive Lookbehind
@@ -92,9 +92,9 @@ extension Regex {
   /// Returns a match if this regex matches the given string in its entirety when matching in reverse.
   public func wholeReverseMatch(in string: Substring) throws -> Regex<Output>.Match?
 
-  /// Returns a match if this string is matched by the given regex at its end.
+  /// Returns a match if this string is matched by the given regex (matching in reverse) at its end.
   public func suffixMatch(in string: String) throws -> Regex<Output>.Match?
-  /// Returns a match if this string is matched by the given regex at its end.
+  /// Returns a match if this string is matched by the given regex (matching in reverse) at its end.
   public func suffixMatch(in string: Substring) throws -> Regex<Output>.Match?
 }
 
@@ -105,7 +105,7 @@ extension BidirectionalCollection where SubSequence == Substring {
   public func firstReverseMatch<Output>(@RegexComponentBuilder of content: () -> some RegexComponent<Output>) -> Regex<Output>.Match?
 
   /// Returns a match if this string is matched by the given regex in its entirety when matching in reverse.
-  public func wholeMatch<R: RegexComponent>(of regex: R) -> Regex<R.RegexOutput>.Match?
+  public func wholeReverseMatch<R: RegexComponent>(of regex: R) -> Regex<R.RegexOutput>.Match?
   /// Returns a match if this string is matched by the given regex in its entirety when matching in reverse.
   public func wholeReverseMatch<Output>(@RegexComponentBuilder of content: () -> some RegexComponent<Output>) -> Regex<Output>.Match?
 
@@ -114,14 +114,14 @@ extension BidirectionalCollection where SubSequence == Substring {
   /// Matches part of the regex, starting at the end.
   public func suffixMatch<Output>(@RegexComponentBuilder of content: () -> some RegexComponent<Output>) -> Regex<Output>.Match?
 
-  /// Returns a new collection of the same type by removing the final elements that match the given regex.
+  /// Returns a new collection of the same type by removing the final elements that match the given regex when matching in reverse.
   public func trimmingSuffix(_ regex: some RegexComponent) -> SubSequence
-  /// Returns a new collection of the same type by removing the final elements that match the given regex.
+  /// Returns a new collection of the same type by removing the final elements that match the given regex when matching in reverse.
   public func trimmingSuffix(@RegexComponentBuilder _ content: () -> some RegexComponent) -> SubSequence
 
-  /// Returns a Boolean value indicating whether the final elements of the sequence are the same as the elements in the specified regex.
+  /// Returns a Boolean value indicating whether the final elements of the sequence are the same as the elements in the specified regex when matching in reverse.
   public func ends(with regex: some RegexComponent) -> Bool
-  /// Returns a Boolean value indicating whether the final elements of the sequence are the same as the elements in the specified regex.
+  /// Returns a Boolean value indicating whether the final elements of the sequence are the same as the elements in the specified regex when matching in reverse.
   public func ends(@RegexComponentBuilder with content: () -> some RegexComponent) -> Bool
 }
 ```
